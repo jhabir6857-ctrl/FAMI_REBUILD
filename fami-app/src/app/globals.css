@@ -1,0 +1,208 @@
+@import 'tailwindcss';
+
+/* ── Brand fonts ──────────────────────────────────────────────────────────
+   Self-hosted per the rebuild plan (no live Google Fonts calls). Drop the
+   actual woff2 files into public/fonts/ — see public/fonts/README.md.
+   Fallback stacks keep layout/legibility correct even before files land. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('/fonts/newsreader-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('/fonts/newsreader-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+
+@theme {
+  /* Fonts — per FaMi-UI-Design-System.md §1: Fraunces for display only,
+     Newsreader for card/product titles + blog body, Inter for all UI chrome. */
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-editorial: 'Newsreader', ui-serif, Georgia, serif;
+  --font-ui: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Color — §2: ~90% of the site should live in ink-plum / parchment / rose-gold.
+     Emerald = loyalty/rewards only. Terracotta = editorial blog tags only. */
+  --color-ink-plum: #2b1f2e;
+  --color-ink-plum-50: #f3eef2;
+  --color-ink-plum-200: #d8cdd6;
+
+  --color-parchment: #faf6f0;
+  --color-parchment-100: #f3ece3;
+  --color-parchment-200: #eae0d2;
+
+  --color-rose-gold: #b76e79;
+  --color-rose-gold-light: #d9a5ac;
+  --color-rose-gold-dark: #96525c;
+  --color-rose-gold-50: #fbf0f1;
+
+  --color-emerald: #1f6f54;
+  --color-emerald-50: #e8f5ef;
+
+  --color-terracotta: #c1673f;
+  --color-terracotta-50: #fbede5;
+
+  --color-text-muted: #6b5f68;
+  --color-border: #ddd3d8;
+  --color-border-muted: #eae3e7;
+
+  /* Not a brand color — WhatsApp's own brand green, used only for the
+     "Order via WhatsApp" CTA outline/fill per the PDP spec. */
+  --color-whatsapp: #25d366;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  body {
+    background: var(--color-parchment);
+    color: var(--color-ink-plum);
+  }
+  /* Visible focus ring everywhere per §4 — never suppressed. */
+  :focus-visible {
+    outline: 2px solid var(--color-rose-gold);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* §3: container max-width 1280px, 24px desktop / 16px mobile gutters. */
+  .container-fami {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+  @media (min-width: 768px) {
+    .container-fami {
+      padding-inline: 24px;
+    }
+  }
+
+  /* §3: 64px vertical rhythm between major sections on desktop, 40px mobile. */
+  .section-gap {
+    padding-block: 40px;
+  }
+  @media (min-width: 768px) {
+    .section-gap {
+      padding-block: 64px;
+    }
+  }
+
+  /* Signature hairline divider — thin gold rule instead of a plain gray <hr>. */
+  .divider-gold {
+    border: none;
+    border-top: 1px solid var(--color-rose-gold-light);
+    opacity: 0.5;
+  }
+
+  /* "Hallmark stamp" eyebrow label — small caps chip used above section headings. */
+  .hallmark-stamp {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 4px 12px;
+    color: var(--color-text-muted);
+  }
+
+  /* §4/§9: minimum touch target size on interactive icon-only controls. */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* §4: pressed state is a scale change, never a color flash. */
+  .press-active {
+    transition: transform 100ms ease-out;
+  }
+  .press-active:active {
+    transform: scale(0.98);
+  }
+
+  /* §5: 150ms micro-interaction timing, ease-out. */
+  .transition-micro {
+    transition-property: color, background-color, border-color, opacity, transform;
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
+  }
+
+  /* ── Entrance animations ────────────────────────────────────────────────
+     CSS-only: no JavaScript, no layout shift.
+     All are cut to 0.01ms by the prefers-reduced-motion guard above. */
+  .animate-fade-in {
+    animation: fami-fade-in 0.55s ease-out both;
+  }
+  .animate-fade-in-up {
+    animation: fami-fade-in-up 0.6s ease-out both;
+  }
+  .animate-slide-in-right {
+    animation: fami-slide-in-right 0.65s ease-out both;
+  }
+  .animate-scale-in {
+    animation: fami-scale-in 0.4s ease-out both;
+  }
+
+  /* Stagger helpers — compose with animate-* classes */
+  .delay-75  { animation-delay: 75ms; }
+  .delay-150 { animation-delay: 150ms; }
+  .delay-250 { animation-delay: 250ms; }
+  .delay-350 { animation-delay: 350ms; }
+  .delay-450 { animation-delay: 450ms; }
+  .delay-550 { animation-delay: 550ms; }
+}
+
+/* ── Keyframe definitions (outside @layer to avoid specificity issues) ── */
+@keyframes fami-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fami-fade-in-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fami-slide-in-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fami-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+

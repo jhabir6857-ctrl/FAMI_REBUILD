@@ -1,0 +1,49 @@
+Complete Phase 3, 4 & 5 — FaMi Website Rebuild
+Full Audit Result
+After reading every relevant file in the codebase, here is the real status:
+
+Item	Status	Evidence
+Admin role (schema + seed account)	✅ Done	schema.ts line 51, seed.ts line 193
+BDT/৳ currency formatting pass	✅ Done	formatBDT() used in Cart, Checkout, ProductCard, Account
+Mobile bottom tab bar	✅ Done	MobileBottomNav.tsx — full 4-tab nav, wired to all pages
+PDP video support	✅ Done	ProductGallery.tsx — <video> slot + thumbnail, graceful fallback
+Checkout address pre-fill (logged-in)	✅ Done	CheckoutClient.tsx — fetches session on mount
+Store locator page	✅ Done	app/store-locator/page.tsx — full UI
+About page	✅ Done	app/about/page.tsx — story, values, categories, CTA
+Contact page + ContactForm	✅ Done	app/contact/page.tsx + components/contact/ContactForm.tsx
+Loyalty & Referral page	✅ Done	app/loyalty/page.tsx — tier system, progress bar, referral copy
+Store address in footer	✅ Done	Footer.tsx renders DB stores
+Rate limiting (newsletter/register/contact)	✅ Done	lib/rate-limit.ts + applied to all 3 routes
+Order notification email	❌ NOT DONE	api/checkout/route.ts has a TODO comment only
+Admin role promotion documentation	⬜ Missing from README	No SQL command documented
+Real Remaining Work
+Only 2 items are genuinely unfinished:
+
+1. Order notification email (Phase 4)
+Wire Resend into /api/checkout/route.ts. When an order is placed, send an HTML email to ORDER_NOTIFICATION_EMAIL (env var). Gracefully degrades to console.log when RESEND_API_KEY is not set — so local dev and the existing admin panel still work without any email config.
+
+Requires installing: npm install resend
+
+2. Admin role promotion docs (Phase 3)
+One line added to README.md — no code changes needed.
+
+Proposed Changes
+[NEW] src/lib/email.ts
+New helper that wraps the Resend SDK. Exports sendOrderNotification(). If RESEND_API_KEY is absent, logs to console and returns silently (preserves existing behavior).
+
+[MODIFY] src/app/api/checkout/route.ts
+Call sendOrderNotification() after the DB transaction succeeds. This is a fire-and-forget call (errors are caught and logged — a failed email must never fail the order).
+
+[MODIFY] fami-app/README.md
+Add a short "Promoting a user to admin" section with the one-liner SQLite command.
+
+Open Question
+IMPORTANT
+
+Do you have a Resend API key? If yes, add it to .env.local as RESEND_API_KEY=re_... and set ORDER_NOTIFICATION_EMAIL to where you want order alerts sent, and I'll wire it fully. If no, I'll still implement the full function — it will gracefully fall back to console.log locally and you can drop the key in any time before going live.
+
+Verification Plan
+npm run build — 0 TypeScript errors
+npm run lint — 0 errors/warnings
+Place a test order → email arrives (or console log shows in dev if no key set)
+Visit /about, /contact, /loyalty, /store-locator — all render correctly with no errors
