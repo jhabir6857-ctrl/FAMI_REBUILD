@@ -48,9 +48,9 @@ export async function POST(req: NextRequest) {
     // Everything below happens atomically: if stock runs out mid-transaction,
     // a concurrent order fails cleanly with SQLite's default IMMEDIATE lock
     // rather than both orders decrementing stock past zero.
-    const result = db.transaction(tx => {
+    const result = await db.transaction(async (tx) => {
       const productIds = items.map(i => i.productId)
-      const dbProducts = tx.select().from(products).where(inArray(products.id, productIds)).all()
+      const dbProducts = await tx.select().from(products).where(inArray(products.id, productIds))
       const productMap = new Map(dbProducts.map(p => [p.id, p]))
 
       let subtotal = 0
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       const total = subtotal + shipping
       const pointsEarned = Math.floor(total / 100) // 1 point per ৳100
 
-      const [order] = tx.insert(orders).values({
+      const [order] = await tx.insert(orders).values({
         userId,
         paymentMethod,
         subtotal,
@@ -81,11 +81,11 @@ export async function POST(req: NextRequest) {
         name,
         notes: notes ?? null,
         pointsEarned,
-      }).returning().all()
+      }).returning()
 
       if (!order) throw new CheckoutError('Failed to create order', 500)
 
-      tx.insert(orderItems).values(
+      await tx.insert(orderItems).values(
         lineItems.map(({ product, quantity, price }) => {
           let firstImage = ''
           try {
@@ -103,27 +103,25 @@ export async function POST(req: NextRequest) {
             quantity,
           }
         })
-      ).run()
+      )
 
       // Conditional decrement (not "current stock minus quantity") so a
       // concurrent transaction can't push stock negative — this row-level
       // WHERE re-checks stock at write time, not just at read time above.
       for (const { product, quantity } of lineItems) {
-        const updated = tx
+        const updated = await tx
           .update(products)
           .set({ stock: sql`${products.stock} - ${quantity}` })
           .where(sql`${products.id} = ${product.id} AND ${products.stock} >= ${quantity}`)
-          .run()
-        if (updated.changes === 0) {
+        if (updated.rowsAffected === 0) {
           throw new CheckoutError(`Insufficient stock for ${product.name}`, 409)
         }
       }
 
       if (userId && pointsEarned > 0) {
-        tx.update(users)
+        await tx.update(users)
           .set({ loyaltyPoints: sql`${users.loyaltyPoints} + ${pointsEarned}` })
           .where(eq(users.id, userId))
-          .run()
       }
 
       return { orderId: order.id, total, subtotal, pointsEarned, lineItems }

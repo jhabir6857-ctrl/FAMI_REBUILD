@@ -1,0 +1,20 @@
+id,slug,name,description,price,compare_at_price,stock,image_urls,video_url,category_id,is_new,is_featured,created_at
+1,rose-gold-solitaire-ring,Rose Gold Solitaire Ring,A single cubic zirconia set in a delicate rose gold band.,2450,,14,[],,1,0,1,2026-08-22 16:24:46
+2,twist-band-ring,Twist Band Ring,Interwoven band in warm gold tone.,1650,,20,[],,1,0,0,2026-08-22 16:24:46
+3,stacking-ring-set,Stacking Ring Set (3pc),Three slim bands designed to mix and match.,2100,2800,9,[],,1,1,0,2026-08-22 16:24:46
+4,layered-pendant-necklace,Layered Pendant Necklace,Two-tier chain with a petite disc pendant.,2900,,11,[],,2,0,1,2026-08-22 16:24:46
+5,pearl-drop-necklace,Pearl Drop Necklace,Single freshwater pearl on a fine chain.,3200,,7,[],,2,0,0,2026-08-22 16:24:46
+6,chain-choker,Chain Choker,"Close-fit chain choker, adjustable clasp.",1800,,16,[],,2,1,0,2026-08-22 16:24:46
+7,huggie-hoop-earrings,Huggie Hoop Earrings,Everyday hoops that hug the earlobe.,1400,,25,[],,3,0,1,2026-08-22 16:24:46
+8,crystal-stud-earrings,Crystal Stud Earrings,Round-cut studs with secure backs.,1200,1600,30,[],,3,0,0,2026-08-22 16:24:46
+9,threader-earrings,Threader Earrings,Fine chain threaders for a modern drape.,1550,,12,[],,3,1,0,2026-08-22 16:24:46
+10,chain-link-bracelet,Chain Link Bracelet,"Chunky chain-link bracelet, lobster clasp.",2000,,13,[],,4,0,0,2026-08-22 16:24:46
+11,beaded-stretch-bracelet,Beaded Stretch Bracelet,Semi-precious stone beads on stretch cord.,950,,22,[],,4,0,0,2026-08-22 16:24:46
+12,structured-tote,Structured Tote,Everyday tote with an internal zip pocket.,4200,,8,[],,5,0,1,2026-08-22 16:24:46
+13,quilted-shoulder-bag,Quilted Shoulder Bag,Quilted texture with a chain strap.,4800,5600,6,[],,5,0,0,2026-08-22 16:24:46
+14,mini-crossbody,Mini Crossbody,"Compact crossbody for cards, phone and keys.",2600,,17,[],,6,1,0,2026-08-22 16:24:46
+15,woven-crossbody,Woven Crossbody,Textured weave with an adjustable strap.,2900,,10,[],,6,0,0,2026-08-22 16:24:46
+16,wrap-midi-dress,Wrap Midi Dress,Flattering wrap silhouette in soft crepe.,3600,,9,[],,7,0,1,2026-08-22 16:24:46
+17,linen-shirt-dress,Linen Shirt Dress,"Breathable linen-blend, relaxed fit.",3100,,12,[],,7,0,0,2026-08-22 16:24:46
+18,vitamin-c-serum,Vitamin C Brightening Serum,15% vitamin C serum for an even tone.,1850,,24,[],,8,0,1,2026-08-22 16:24:46
+19,hydrating-gift-set,Hydrating Skincare Gift Set,"Cleanser, serum and moisturiser in a gift box.",3400,4200,15,[],,9,1,0,2026-08-22 16:24:46

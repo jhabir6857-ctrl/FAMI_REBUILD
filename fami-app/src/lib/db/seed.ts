@@ -1,14 +1,18 @@
-import bcrypt from 'bcryptjs'
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { drizzle } from 'drizzle-orm/libsql'
+import { createClient } from '@libsql/client'
 import * as schema from './schema'
+import bcrypt from 'bcryptjs'
 
-const sqlite = new Database(process.env.DATABASE_URL ?? './fami.db')
-sqlite.pragma('foreign_keys = ON')
-const db = drizzle(sqlite, { schema })
+const client = createClient({
+  url: process.env.DATABASE_URL ?? 'file:./fami.db',
+  authToken: process.env.DATABASE_AUTH_TOKEN,
+})
 
+const db = drizzle(client, { schema })
+
+// Quick schema creation since we run this manually for local dev/testing
 function createTables() {
-  sqlite.exec(`
+  client.executeMultiple(`
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       slug TEXT NOT NULL UNIQUE,
@@ -95,12 +99,12 @@ function createTables() {
 }
 
 async function seed() {
-  createTables()
+  await createTables()
 
   // Idempotent: skip if already seeded.
-  const existing = db.select().from(schema.categories).all()
+  const existing = await db.select().from(schema.categories)
   if (existing.length > 0) {
-    console.log('Already seeded — skipping. Delete fami.db to reseed from scratch.')
+    console.log('Already seeded - skipping. Delete fami.db to reseed from scratch.')
     return
   }
 
@@ -115,7 +119,7 @@ async function seed() {
     { slug: 'skincare', name: 'Skincare', description: 'Cleansers, serums and moisturisers' },
     { slug: 'gift-sets', name: 'Gift sets', description: 'Curated gifting bundles' },
   ]
-  const insertedCategories = db.insert(schema.categories).values(categoryDefs).returning().all()
+  const insertedCategories = await db.insert(schema.categories).values(categoryDefs).returning()
   const catId = (slug: string) => insertedCategories.find(c => c.slug === slug)!.id
 
   const productDefs: Array<{
@@ -143,7 +147,7 @@ async function seed() {
     { slug: 'hydrating-gift-set', name: 'Hydrating Skincare Gift Set', description: 'Cleanser, serum and moisturiser in a gift box.', price: 3400, compareAtPrice: 4200, stock: 15, category: 'gift-sets', isNew: true },
   ]
 
-  const insertedProducts = db.insert(schema.products).values(
+  const insertedProducts = await db.insert(schema.products).values(
     productDefs.map(p => ({
       slug: p.slug,
       name: p.name,
@@ -156,10 +160,10 @@ async function seed() {
       isNew: p.isNew ?? false,
       isFeatured: p.isFeatured ?? false,
     }))
-  ).returning().all()
+  ).returning()
   console.log(`Seeded ${insertedProducts.length} products across ${insertedCategories.length} categories.`)
 
-  db.insert(schema.blogPosts).values([
+  await db.insert(schema.blogPosts).values([
     {
       slug: 'how-to-layer-necklaces',
       title: 'How to layer necklaces without the tangle',
@@ -181,18 +185,18 @@ async function seed() {
       content: '<p>One structured tote for work, one crossbody for errands, and one evening bag for occasions covers most weeks without overbuying.</p>',
       tags: JSON.stringify(['guides', 'bags']),
     },
-  ]).run()
+  ])
 
-  db.insert(schema.stores).values([
-    { name: 'FaMi — Gulshan', address: 'House 12, Road 103, Gulshan 2, Dhaka', hours: 'Sat–Thu, 11am–8pm', phone: '+8801700000000' },
-    { name: 'FaMi — Dhanmondi', address: 'Road 27, Dhanmondi, Dhaka', hours: 'Sat–Thu, 11am–8pm', phone: '+8801700000001' },
-  ]).run()
+  await db.insert(schema.stores).values([
+    { name: 'FaMi - Gulshan', address: 'House 12, Road 103, Gulshan 2, Dhaka', hours: 'Sat-Thu, 11am-8pm', phone: '+8801700000000' },
+    { name: 'FaMi - Dhanmondi', address: 'Road 27, Dhanmondi, Dhaka', hours: 'Sat-Thu, 11am-8pm', phone: '+8801700000001' },
+  ])
 
   const demoPasswordHash = await bcrypt.hash('password123', 10)
-  db.insert(schema.users).values([
+  await db.insert(schema.users).values([
     { name: 'Admin', email: 'admin@famibd.shop', passwordHash: demoPasswordHash, referralCode: 'FAMI-ADMN0001', role: 'admin' },
     { name: 'Demo Customer', email: 'customer@famibd.shop', passwordHash: demoPasswordHash, referralCode: 'FAMI-DEMO0001', role: 'customer' },
-  ]).run()
+  ])
 
   console.log('Seed complete. Demo accounts (password: "password123"):')
   console.log('  admin@famibd.shop    (role: admin)')
@@ -200,9 +204,9 @@ async function seed() {
 }
 
 seed()
-  .then(() => sqlite.close())
+  .then(() => client.close())
   .catch(err => {
     console.error(err)
-    sqlite.close()
+    client.close()
     process.exit(1)
   })
