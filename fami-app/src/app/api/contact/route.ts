@@ -10,7 +10,7 @@ const schema = z.object({
 
 export async function POST(req: NextRequest) {
   // 5 messages per IP per 10 minutes
-  if (!rateLimit(`contact:${clientIp(req)}`, 5, 10 * 60 * 1000)) {
+  if (!(await rateLimit(`contact:${clientIp(req)}`, 5, 10 * 60 * 1000))) {
     return NextResponse.json({ error: 'Too many requests. Please wait a few minutes and try again.' }, { status: 429 })
   }
 

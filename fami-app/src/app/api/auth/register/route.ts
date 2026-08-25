@@ -20,7 +20,7 @@ function generateReferralCode(name: string): string {
 
 export async function POST(req: NextRequest) {
   // Spam protection (Phase 5 gap-fill): 5 registrations per IP per 10 minutes.
-  if (!rateLimit(`register:${clientIp(req)}`, 5, 10 * 60 * 1000)) {
+  if (!(await rateLimit(`register:${clientIp(req)}`, 5, 10 * 60 * 1000))) {
     return NextResponse.json({ error: 'Too many attempts. Please wait a few minutes and try again.' }, { status: 429 })
   }
 

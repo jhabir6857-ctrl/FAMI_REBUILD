@@ -119,3 +119,10 @@ export const stores = sqliteTable('stores', {
   hours: text('hours').notNull().default(''),
   phone: text('phone'),
 })
+
+// 🛡️ Rate Limits 🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
+export const rateLimits = sqliteTable('rate_limits', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  key: text('key').notNull(),
+  timestamp: integer('timestamp').notNull(),
+})

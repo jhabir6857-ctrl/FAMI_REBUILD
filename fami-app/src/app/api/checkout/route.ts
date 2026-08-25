@@ -22,7 +22,7 @@ const checkoutSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  if (!rateLimit(`checkout:${clientIp(req)}`, 10, 10 * 60 * 1000)) {
+  if (!(await rateLimit(`checkout:${clientIp(req)}`, 10, 10 * 60 * 1000))) {
     return NextResponse.json({ error: 'Too many orders placed. Please wait a few minutes and try again.' }, { status: 429 })
   }
 

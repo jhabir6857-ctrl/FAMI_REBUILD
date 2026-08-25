@@ -1,22 +1,29 @@
-const hits = new Map<string, number[]>()
+import { db } from './db'
+import { rateLimits } from './db/schema'
+import { eq, gt } from 'drizzle-orm'
 
 /**
  * Returns true if `key` (typically `${route}:${ip}`) has stayed under
  * `limit` requests within the trailing `windowMs`. Records the current
  * request as a side effect when allowed.
  */
-export function rateLimit(key: string, limit: number, windowMs: number): boolean {
+export async function rateLimit(key: string, limit: number, windowMs: number): Promise<boolean> {
   const now = Date.now()
   const windowStart = now - windowMs
-  const recent = (hits.get(key) ?? []).filter(t => t > windowStart)
+
+  // Clean up old entries
+  // SQLite/Turso doesn't have a direct 'delete older than' in a single easy Drizzle call without raw SQL,
+  // but we can query recent first, check length, then insert.
+  
+  const recent = await db.query.rateLimits.findMany({
+    where: (rl, { and, eq, gt }) => and(eq(rl.key, key), gt(rl.timestamp, windowStart))
+  })
 
   if (recent.length >= limit) {
-    hits.set(key, recent)
     return false
   }
 
-  recent.push(now)
-  hits.set(key, recent)
+  await db.insert(rateLimits).values({ key, timestamp: now })
   return true
 }
 

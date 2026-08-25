@@ -14,6 +14,12 @@ export async function POST(req: NextRequest) {
   const file = formData.get('file')
   if (!file || !(file instanceof File)) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
 
+  const validTypes = ['image/jpeg', 'image/png', 'image/webp']
+  if (!validTypes.includes(file.type)) return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' }, { status: 400 })
+  
+  const maxSize = 5 * 1024 * 1024 // 5MB
+  if (file.size > maxSize) return NextResponse.json({ error: 'File size exceeds 5MB limit.' }, { status: 400 })
+
   // If no Cloudinary config, return a placeholder so the admin can still paste URLs manually
   if (!cloudName) {
     return NextResponse.json({ url: '' }, { status: 200 })

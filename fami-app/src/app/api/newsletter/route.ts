@@ -8,7 +8,7 @@ const schema = z.object({
 
 export async function POST(req: NextRequest) {
   // 3 signups per IP per 10 minutes — prevents bot harvesting
-  if (!rateLimit(`newsletter:${clientIp(req)}`, 3, 10 * 60 * 1000)) {
+  if (!(await rateLimit(`newsletter:${clientIp(req)}`, 3, 10 * 60 * 1000))) {
     return NextResponse.json({ error: 'Too many requests. Please wait a few minutes.' }, { status: 429 })
   }
 
