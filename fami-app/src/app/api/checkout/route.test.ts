@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 
 // This is a basic integration test scaffold for the checkout API route.
 // In a full test, we would mock the database calls (e.g. `db.transaction`)

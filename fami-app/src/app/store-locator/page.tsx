@@ -1,4 +1,5 @@
 import { MapPin, Clock, Phone } from 'lucide-react'
+import Link from 'next/link'
 import { getStores, getCategories } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
@@ -108,12 +109,12 @@ export default async function StoreLocatorPage() {
             Shop our full collection online and get it delivered to your door, or reach us on WhatsApp for personalised help.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
+            <Link
               href="/shop"
               className="inline-flex items-center justify-center h-11 px-6 rounded-[var(--radius-md)] bg-[var(--color-rose-gold)] text-white font-ui text-sm font-medium hover:bg-[var(--color-rose-gold-dark)] transition-micro"
             >
               Shop online
-            </a>
+            </Link>
             <a
               href="https://wa.me/8801XXXXXXXXX"
               target="_blank"

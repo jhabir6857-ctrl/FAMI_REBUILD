@@ -1,6 +1,6 @@
 import { db } from './db'
 import { rateLimits } from './db/schema'
-import { eq, gt } from 'drizzle-orm'
+
 
 /**
  * Returns true if `key` (typically `${route}:${ip}`) has stayed under
