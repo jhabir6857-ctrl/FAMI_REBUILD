@@ -43,14 +43,19 @@ export function ChatBubble() {
             </div>
           </div>
         </div>
-        <div className="p-3 bg-white border-t border-[var(--color-border-muted)]">
-          <div className="relative">
-            <input 
-              type="text" 
-              placeholder="Type your message..." 
-              className="w-full bg-[var(--color-parchment)] border-none rounded-full py-2.5 px-4 font-ui text-sm text-[var(--color-ink-plum)] outline-none focus:ring-1 focus:ring-[var(--color-rose-gold)] transition-shadow"
-            />
-          </div>
+        <div className="p-4 bg-white border-t border-[var(--color-border-muted)]">
+          <a
+            href="https://wa.me/8801611158514"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 px-4 font-ui text-sm font-medium text-white shadow-md transition-transform hover:scale-[1.02]"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"></path>
+              <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"></path>
+            </svg>
+            Chat on WhatsApp
+          </a>
         </div>
       </div>
 
@@ -64,7 +69,10 @@ export function ChatBubble() {
         <div className="absolute inset-0 rounded-full border border-[var(--color-ink-plum)] animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite] opacity-20" />
         
         <div className={`transition-all duration-500 ${isOpen ? 'rotate-90 scale-0 opacity-0 absolute' : 'rotate-0 scale-100 opacity-100'}`}>
-          <MessageCircle size={24} strokeWidth={1.5} />
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"></path>
+            <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"></path>
+          </svg>
         </div>
         
         <div className={`transition-all duration-500 ${isOpen ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-0 opacity-0 absolute'}`}>
