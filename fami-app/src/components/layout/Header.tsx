@@ -56,13 +56,18 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
           <Menu size={22} aria-hidden="true" />
         </button>
 
-        <Link href="/" className="flex items-center gap-2" aria-label="FaMi — home">
+        <Link 
+          href="/" 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="flex items-center gap-2" 
+          aria-label="FaMi — home"
+        >
           <Image
             src="/logo.jpg"
             alt="FaMi"
             width={40}
             height={40}
-            className="object-contain"
+            className="object-contain rounded-full"
             priority
           />
           <span className="font-display text-xl font-medium text-[var(--color-ink-plum)] hidden sm:block">FaMi</span>
@@ -147,10 +152,17 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
           <button aria-label="Close menu" className="absolute inset-0 bg-[var(--color-ink-plum)]/40 animate-fade-in" onClick={() => setDrawerOpen(false)} />
           <div className="absolute inset-y-0 left-0 flex w-72 flex-col gap-1 bg-white p-6 animate-slide-in-left">
             <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Image src="/logo.jpg" alt="FaMi" width={32} height={32} className="object-contain" />
+              <Link 
+                href="/" 
+                onClick={() => {
+                  setDrawerOpen(false)
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }}
+                className="flex items-center gap-2"
+              >
+                <Image src="/logo.jpg" alt="FaMi" width={32} height={32} className="object-contain rounded-full" />
                 <span className="font-display text-xl text-[var(--color-ink-plum)]">FaMi</span>
-              </div>
+              </Link>
               <button onClick={() => setDrawerOpen(false)} aria-label="Close menu" className="touch-target flex items-center justify-center">
                 <X size={20} aria-hidden="true" />
               </button>
