@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Check } from 'lucide-react'
 
 const slides = [
   {
@@ -68,27 +69,43 @@ export function HeroSlider() {
       {/* Text Content */}
       <div className="container-fami relative z-20 w-full flex flex-col items-center text-center mt-8">
         <div className="flex flex-col items-center max-w-4xl px-4 py-12 rounded-3xl backdrop-blur-[2px] bg-white/5">
-          <p className="hallmark-stamp text-white/90 border-white/40 mb-8 animate-fade-in-up">
-            New collection 2026
+          <p className="hallmark-stamp text-white/90 border-white/40 mb-6 animate-fade-in-up">
+            FaMi Exclusive Collection
           </p>
-          <h1 className="font-display text-5xl md:text-7xl lg:text-[5rem] font-medium text-white leading-[1.05] mb-6 animate-fade-in-up delay-150 tracking-tight drop-shadow-sm">
-            Curated for the<br className="hidden md:block" /> <em className="not-italic text-[var(--color-rose-gold-light)] font-medium">discerning</em> shopper
+          <h1 className="font-display text-5xl md:text-7xl lg:text-[4.5rem] font-medium text-white leading-[1.05] mb-8 animate-fade-in-up delay-150 tracking-tight drop-shadow-sm">
+            Feel effortlessly <em className="not-italic text-[var(--color-rose-gold-light)] font-medium">elegant</em><br className="hidden md:block" /> every single day.
           </h1>
-          <p className="font-ui text-base md:text-lg text-white/90 max-w-lg leading-relaxed mb-10 animate-fade-in-up delay-250 font-light drop-shadow-sm">
-            Fashion, jewellery, bags and skincare — each piece chosen for quality that outlasts trends.
-          </p>
-          <div className="flex flex-wrap justify-center gap-5 animate-fade-in-up delay-350">
+          
+          {/* Rule: 1-3 key bullets per section + Break up blocks of text */}
+          <div className="flex flex-col gap-3 font-ui text-sm md:text-base text-white/90 leading-relaxed mb-8 animate-fade-in-up delay-250 drop-shadow-sm mx-auto items-start">
+            <p className="flex items-center gap-3"><Check size={18} className="text-[var(--color-rose-gold-light)] flex-shrink-0" /> <span>Instantly elevate any outfit you wear.</span></p>
+            <p className="flex items-center gap-3"><Check size={18} className="text-[var(--color-rose-gold-light)] flex-shrink-0" /> <span>Premium quality materials that actually last.</span></p>
+            <p className="flex items-center gap-3"><Check size={18} className="text-[var(--color-rose-gold-light)] flex-shrink-0" /> <span>Handpicked exclusively for the modern woman.</span></p>
+          </div>
+
+          {/* Rule: Handle objections before CTA + Proof next to claim */}
+          <div className="flex items-center justify-center gap-2 mb-6 animate-fade-in-up delay-300">
+            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-green-500/20 text-green-400">
+              <Check size={12} strokeWidth={3} />
+            </span>
+            <p className="font-ui text-sm text-white/80 font-medium">
+              100% Authentic Guarantee. Free delivery over ৳5000.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-4 animate-fade-in-up delay-350">
+            {/* Rule: CTA clear verb + outcome */}
             <Link
               href="/shop"
-              className="inline-flex items-center justify-center h-14 px-10 bg-white/95 text-[var(--color-ink-plum)] font-ui text-sm font-medium rounded-full hover:bg-white transition-all duration-300 press-active tracking-wide shadow-lg hover:shadow-white/20 hover:scale-105"
+              className="inline-flex items-center justify-center h-14 px-8 bg-white/95 text-[var(--color-ink-plum)] font-ui text-sm font-medium rounded-full hover:bg-white transition-all duration-300 press-active tracking-wide shadow-lg hover:shadow-white/20 hover:scale-105"
             >
-              Shop the collection
+              Upgrade Your Look
             </Link>
             <Link
               href="/about"
-              className="inline-flex items-center justify-center h-14 px-10 bg-transparent border border-white/40 text-white font-ui text-sm font-medium rounded-full hover:bg-white/10 hover:border-white transition-all duration-300 press-active tracking-wide backdrop-blur-md"
+              className="inline-flex items-center justify-center h-14 px-8 bg-transparent border border-white/40 text-white font-ui text-sm font-medium rounded-full hover:bg-white/10 hover:border-white transition-all duration-300 press-active tracking-wide backdrop-blur-md"
             >
-              Our story
+              Read Our Story
             </Link>
           </div>
         </div>

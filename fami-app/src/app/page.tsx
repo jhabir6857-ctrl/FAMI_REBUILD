@@ -113,22 +113,31 @@ export default async function HomePage() {
 
         <hr className="divider-gold container-fami" />
 
-        {/* ── Brand story ── */}
+        {/* ✨ Brand story ✨ */}
         <section className="section-gap bg-[var(--color-parchment-100)]" aria-labelledby="brand-story-heading">
-          <div className="container-fami max-w-3xl">
-            <p className="hallmark-stamp mb-4">Our story</p>
-            <h2 id="brand-story-heading" className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)] mb-6">
-              Quiet luxury,
-              <br />every day
+          <div className="container-fami max-w-4xl">
+            <p className="hallmark-stamp mb-4 text-[var(--color-ink-plum)]/70">The FaMi Standard</p>
+            <h2 id="brand-story-heading" className="font-display text-3xl md:text-5xl font-medium text-[var(--color-ink-plum)] mb-10 leading-tight">
+              Stop settling for fast fashion.<br /> Invest in yourself.
             </h2>
-            <p className="font-ui text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
-              FaMi was founded on a simple belief: that beautiful things should be accessible to everyone who appreciates them. We source each piece with intention — from jewellery ateliers, bag workshops, and skincare labs that share our commitment to craft over convenience.
-            </p>
-            <p className="font-ui text-base text-[var(--color-text-muted)] leading-relaxed mb-8">
-              Every product we carry passes a quality review before it earns a place in our collection. We think that matters.
-            </p>
-            <Link href="/about" className="font-ui text-sm font-medium text-[var(--color-rose-gold)] hover:underline">
-              Read our full story →
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-10">
+              <div className="flex flex-col gap-3">
+                <h3 className="font-display text-2xl text-[var(--color-ink-plum)]">Tired of fading accessories?</h3>
+                <p className="font-ui text-base text-[var(--color-text-muted)] leading-relaxed">
+                  Most jewelry loses its shine after a few weeks. We source premium materials that stay brilliant, so you never have to throw away a favorite piece again.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <h3 className="font-display text-2xl text-[var(--color-ink-plum)]">Curated for your lifestyle</h3>
+                <p className="font-ui text-base text-[var(--color-text-muted)] leading-relaxed">
+                  We filter out the noise. Every bag, dress, and skincare product in our store is meticulously tested for quality before it ever reaches your hands.
+                </p>
+              </div>
+            </div>
+
+            <Link href="/about" className="font-ui text-sm font-medium text-[var(--color-rose-gold)] hover:underline flex items-center gap-1 group w-max">
+              Discover how we test our products <span className="group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           </div>
         </section>

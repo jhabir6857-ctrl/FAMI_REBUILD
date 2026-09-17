@@ -25,12 +25,13 @@ export default async function AboutPage() {
 
         {/* Hero */}
         <section className="container-fami py-14 md:py-20">
-          <span className="hallmark-stamp mb-6 inline-block">Our story</span>
+          <span className="hallmark-stamp mb-6 inline-block text-[var(--color-ink-plum)]/70">Who We Are</span>
+          {/* Rule: Benefit before feature, punchy */}
           <h1 className="font-display text-5xl md:text-7xl font-medium text-[var(--color-ink-plum)] leading-[1.05] max-w-2xl">
-            Crafted for the women who know themselves
+            Stop second-guessing your style.
           </h1>
           <p className="font-editorial text-lg md:text-xl text-[var(--color-text-muted)] mt-6 max-w-xl leading-relaxed">
-            FaMi started with one simple belief: that beautiful things should be accessible, and that real quality never goes out of style.
+            We curate the wardrobe you’ve always wanted. Discover premium jewellery, designer bags, and luxurious skincare that look expensive, feel incredible, and actually last.
           </p>
         </section>
 
@@ -39,12 +40,14 @@ export default async function AboutPage() {
         {/* Monogram section */}
         <section className="container-fami py-14 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)] mb-5">The FM monogram</h2>
+            {/* Rule: Specific headline */}
+            <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)] mb-5">The FM Seal of Approval</h2>
+            {/* Rule: Break up blocks of text, punchy */}
             <p className="font-ui text-base text-[var(--color-text-muted)] leading-relaxed mb-4">
-              Our rose-gold FM mark is more than a logo — it&apos;s a promise. Every piece that carries it has been chosen for its craftsmanship, its material integrity, and its staying power.
+              When you see the rose-gold FM mark, you know it’s guaranteed to last.
             </p>
             <p className="font-ui text-base text-[var(--color-text-muted)] leading-relaxed">
-              We curate, not just source. That means every product in our collection has been held, worn, and assessed before it makes it to you.
+              We curate, not just source. That means every single piece of jewelry, every bag, and every dress is worn, tested, and reviewed before it ever reaches our store.
             </p>
           </div>
           {/* Monogram display */}
@@ -63,21 +66,21 @@ export default async function AboutPage() {
 
         {/* Values */}
         <section className="container-fami py-14 md:py-20">
-          <span className="hallmark-stamp mb-6 inline-block">What we stand for</span>
-          <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)] mb-10">Our values</h2>
+          <span className="hallmark-stamp mb-6 inline-block text-[var(--color-ink-plum)]/70">What we stand for</span>
+          <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)] mb-10">Our Promise To You</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {[
               {
-                title: 'Quality first',
-                body: 'Every product is chosen for its materials, construction, and longevity — not just its price point.',
+                title: 'Never replace it again',
+                body: 'We choose premium materials over cheap trends. Wear your favorite pieces every day without worrying about them breaking or fading.',
               },
               {
-                title: 'Honest curation',
-                body: "We only carry pieces we'd recommend to someone we care about. Our catalogue is deliberately small and intentional.",
+                title: 'Tested by us, loved by you',
+                body: "We refuse to sell anything we wouldn't wear ourselves. Our catalogue is small, intentional, and strictly vetted.",
               },
               {
-                title: 'Customer in focus',
-                body: 'From fast delivery to a no-fuss returns policy, every decision we make starts with the question: what does our customer actually need?',
+                title: 'Zero-hassle shopping',
+                body: 'Fast delivery, responsive WhatsApp support, and seamless checkout. We respect your time and money.',
               },
             ].map(value => (
               <div key={value.title} className="flex flex-col gap-3">
@@ -93,9 +96,9 @@ export default async function AboutPage() {
 
         {/* Categories preview */}
         <section className="container-fami py-14 md:py-20">
-          <h2 className="font-display text-3xl font-medium text-[var(--color-ink-plum)] mb-4">What we carry</h2>
+          <h2 className="font-display text-3xl font-medium text-[var(--color-ink-plum)] mb-4">Find your next favorite</h2>
           <p className="font-ui text-sm text-[var(--color-text-muted)] mb-8">
-            {categories.length} curated categories — each one selected to work together as a complete wardrobe.
+            Curated categories selected to build your complete dream wardrobe.
           </p>
           <div className="flex flex-wrap gap-3">
             {categories.map(cat => (
@@ -113,23 +116,28 @@ export default async function AboutPage() {
         <hr className="divider-gold" />
 
         {/* CTA */}
-        <section className="container-fami py-14 md:py-20 text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)] mb-4">Ready to explore?</h2>
-          <p className="font-ui text-base text-[var(--color-text-muted)] mb-8">
-            Browse the collection or get in touch — we&apos;re always happy to help you find the perfect piece.
+        <section className="container-fami py-14 md:py-20 text-center max-w-2xl mx-auto">
+          <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)] mb-4">Elevate your everyday.</h2>
+          {/* Rule: Handle objections before CTA */}
+          <p className="font-ui text-base text-[var(--color-text-muted)] mb-2">
+            100% Authentic. Free delivery in Dhaka for orders over ৳5000.
+          </p>
+          <p className="font-ui text-sm text-[var(--color-text-muted)] mb-8">
+            If you need help choosing, reach out to us directly.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Rule: CTA clear verb + outcome */}
             <Link
               href="/shop"
               className="inline-flex items-center justify-center h-12 px-8 rounded-[var(--radius-md)] bg-[var(--color-rose-gold)] text-white font-ui text-sm font-medium hover:bg-[var(--color-rose-gold-dark)] transition-micro"
             >
-              Shop the collection
+              Build Your Wardrobe
             </Link>
             <Link
               href="/contact"
               className="inline-flex items-center justify-center h-12 px-8 rounded-[var(--radius-md)] border border-[var(--color-ink-plum)] text-[var(--color-ink-plum)] font-ui text-sm font-medium hover:bg-[var(--color-ink-plum-50)] transition-micro"
             >
-              Contact us
+              Ask A Question
             </Link>
           </div>
         </section>
