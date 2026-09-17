@@ -22,11 +22,14 @@ export function CheckoutClient() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod')
+  const [deliveryZone, setDeliveryZone] = useState<'inside' | 'outside'>('inside')
   const [form, setForm] = useState({
     name: '', email: '', phone: '', address: '', city: '', notes: '',
   })
 
-  const shipping = totalPrice >= 5000 ? 0 : 120
+  // Delivery logic: Free over 5000, else 80 Inside Dhaka, 150 Outside Dhaka
+  const baseShipping = deliveryZone === 'inside' ? 80 : 150
+  const shipping = totalPrice >= 5000 ? 0 : baseShipping
   const total = totalPrice + shipping
 
   // Pre-fill from session if logged in
@@ -59,6 +62,7 @@ export function CheckoutClient() {
     const payload = {
       ...form,
       paymentMethod,
+      deliveryZone,
       items: items.map(i => ({ productId: i.productId, quantity: i.quantity })),
     }
 
@@ -161,6 +165,20 @@ export function CheckoutClient() {
           {/* Shipping */}
           <fieldset className="flex flex-col gap-4">
             <legend className="font-display text-xl font-medium text-[var(--color-ink-plum)] mb-2">Delivery address</legend>
+
+            <div className="flex flex-col gap-2 mb-2">
+              <label className="font-ui text-sm font-medium text-[var(--color-ink-plum)]">Delivery Zone</label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className={`flex items-center gap-2 p-3 rounded-[var(--radius-sm)] border cursor-pointer transition-micro ${deliveryZone === 'inside' ? 'border-[var(--color-rose-gold)] bg-[var(--color-rose-gold-50)]' : 'border-[var(--color-border)]'}`}>
+                  <input type="radio" name="deliveryZone" value="inside" checked={deliveryZone === 'inside'} onChange={() => setDeliveryZone('inside')} className="accent-[var(--color-rose-gold)]" />
+                  <span className="font-ui text-sm text-[var(--color-ink-plum)]">Inside Dhaka (৳80)</span>
+                </label>
+                <label className={`flex items-center gap-2 p-3 rounded-[var(--radius-sm)] border cursor-pointer transition-micro ${deliveryZone === 'outside' ? 'border-[var(--color-rose-gold)] bg-[var(--color-rose-gold-50)]' : 'border-[var(--color-border)]'}`}>
+                  <input type="radio" name="deliveryZone" value="outside" checked={deliveryZone === 'outside'} onChange={() => setDeliveryZone('outside')} className="accent-[var(--color-rose-gold)]" />
+                  <span className="font-ui text-sm text-[var(--color-ink-plum)]">Outside Dhaka (৳150)</span>
+                </label>
+              </div>
+            </div>
 
             <div className="flex flex-col gap-1">
               <label htmlFor="address" className="font-ui text-sm font-medium text-[var(--color-ink-plum)]">Street address <span aria-hidden>*</span></label>

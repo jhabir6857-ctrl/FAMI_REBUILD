@@ -14,6 +14,7 @@ const checkoutSchema = z.object({
   address: z.string().min(5),
   city: z.string().min(2),
   paymentMethod: z.enum(['cod', 'whatsapp', 'bkash', 'nagad']),
+  deliveryZone: z.enum(['inside', 'outside']),
   notes: z.string().optional(),
   items: z.array(z.object({
     productId: z.number().int().positive(),
@@ -41,8 +42,8 @@ export async function POST(req: NextRequest) {
   const session = await auth()
   const userId = session?.user?.id ? Number(session.user.id) : null
 
-  const { name, email, phone, address, city, paymentMethod, notes, items } = parsed.data
-  const shippingAddress = `${address}, ${city}`
+  const { name, email, phone, address, city, paymentMethod, deliveryZone, notes, items } = parsed.data
+  const shippingAddress = `${address}, ${city} (${deliveryZone === 'inside' ? 'Inside Dhaka' : 'Outside Dhaka'})`
 
   try {
     // Everything below happens atomically: if stock runs out mid-transaction,
@@ -66,7 +67,8 @@ export async function POST(req: NextRequest) {
         lineItems.push({ product, quantity: item.quantity, price: product.price })
       }
 
-      const shipping = subtotal >= 5000 ? 0 : 120
+      const baseShipping = deliveryZone === 'inside' ? 80 : 150
+      const shipping = subtotal >= 5000 ? 0 : baseShipping
       const total = subtotal + shipping
       const pointsEarned = Math.floor(total / 100) // 1 point per ৳100
 

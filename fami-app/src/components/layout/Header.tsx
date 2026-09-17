@@ -70,22 +70,24 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
           <Menu size={22} aria-hidden="true" />
         </button>
 
-        <Link 
-          href="/" 
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="flex items-center gap-2" 
-          aria-label="FaMi — home"
-        >
-          <Image
-            src="/logo.jpg"
-            alt="FaMi"
-            width={40}
-            height={40}
-            className="object-contain rounded-full"
-            priority
-          />
-          <span className="font-display text-xl font-medium text-[var(--color-ink-plum)] hidden sm:block">FaMi</span>
-        </Link>
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0">
+          <Link 
+            href="/" 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-2" 
+            aria-label="FaMi — home"
+          >
+            <Image
+              src="/logo.jpg"
+              alt="FaMi"
+              width={40}
+              height={40}
+              className="object-contain rounded-full"
+              priority
+            />
+            <span className="font-display text-xl font-medium text-[var(--color-ink-plum)] hidden sm:block">FaMi</span>
+          </Link>
+        </div>
 
         {/* Desktop nav — luxury styling with animated underline */}
         <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
