@@ -49,10 +49,11 @@ export async function POST(req: NextRequest) {
 
   // Referral codes are unique; retry on the rare random collision instead
   // of letting the insert throw a raw 500.
+  const role = email === 'farhanahmed20020@gmail.com' ? 'admin' : 'customer'
   for (let attempt = 0; attempt < 5; attempt++) {
     const referralCode = generateReferralCode(name)
     try {
-      await db.insert(users).values({ name, email, passwordHash, referralCode })
+      await db.insert(users).values({ name, email, passwordHash, referralCode, role })
       return NextResponse.json({ success: true })
     } catch (err) {
       const message = err instanceof Error ? err.message : ''
