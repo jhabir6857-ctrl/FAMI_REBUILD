@@ -118,3 +118,12 @@ export const rateLimits = pgTable('rate_limits', {
   key: text('key').notNull(),
   timestamp: integer('timestamp').notNull(),
 })
+
+// ———————————————— Settings ————————————————
+export const settings = pgTable('settings', {
+  id: serial('id').primaryKey(),
+  deliveryChargeInside: integer('delivery_charge_inside').notNull().default(80),
+  deliveryChargeOutside: integer('delivery_charge_outside').notNull().default(150),
+  freeShippingThreshold: integer('free_shipping_threshold').notNull().default(5000),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+})

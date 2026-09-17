@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { orders, orderItems, users, products } from '@/lib/db/schema'
+import { orders, orderItems, users, products, settings } from '@/lib/db/schema'
 import { eq, inArray, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { clientIp, rateLimit } from '@/lib/rate-limit'
@@ -67,8 +67,13 @@ export async function POST(req: NextRequest) {
         lineItems.push({ product, quantity: item.quantity, price: product.price })
       }
 
-      const baseShipping = deliveryZone === 'inside' ? 80 : 150
-      const shipping = subtotal >= 5000 ? 0 : baseShipping
+      let [currentSettings] = await tx.select().from(settings).limit(1)
+      if (!currentSettings) {
+        currentSettings = { deliveryChargeInside: 80, deliveryChargeOutside: 150, freeShippingThreshold: 5000, id: 1, updatedAt: new Date() }
+      }
+
+      const baseShipping = deliveryZone === 'inside' ? currentSettings.deliveryChargeInside : currentSettings.deliveryChargeOutside
+      const shipping = subtotal >= currentSettings.freeShippingThreshold ? 0 : baseShipping
       const total = subtotal + shipping
       const pointsEarned = Math.floor(total / 100) // 1 point per ৳100
 

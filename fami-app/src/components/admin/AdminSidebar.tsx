@@ -22,6 +22,7 @@ export function AdminSidebar() {
     { href: '/admin/products', label: 'Products' },
     { href: '/admin/blog', label: 'Blog' },
     { href: '/admin/stores', label: 'Stores' },
+    { href: '/admin/settings', label: 'Settings' },
   ]
 
   return (

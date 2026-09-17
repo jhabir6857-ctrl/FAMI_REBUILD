@@ -16,7 +16,7 @@ const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; hint: string; disa
   { value: 'whatsapp', label: 'WhatsApp confirmation', hint: 'Place the order here, then confirm payment via WhatsApp.' },
 ]
 
-export function CheckoutClient() {
+export function CheckoutClient({ settings }: { settings: { deliveryChargeInside: number, deliveryChargeOutside: number, freeShippingThreshold: number } }) {
   const { items, totalPrice, clearCart } = useCart()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -27,9 +27,9 @@ export function CheckoutClient() {
     name: '', email: '', phone: '', address: '', city: '', notes: '',
   })
 
-  // Delivery logic: Free over 5000, else 80 Inside Dhaka, 150 Outside Dhaka
-  const baseShipping = deliveryZone === 'inside' ? 80 : 150
-  const shipping = totalPrice >= 5000 ? 0 : baseShipping
+  // Delivery logic: Use values from DB
+  const baseShipping = deliveryZone === 'inside' ? settings.deliveryChargeInside : settings.deliveryChargeOutside
+  const shipping = totalPrice >= settings.freeShippingThreshold ? 0 : baseShipping
   const total = totalPrice + shipping
 
   // Pre-fill from session if logged in
@@ -171,11 +171,11 @@ export function CheckoutClient() {
               <div className="grid grid-cols-2 gap-3">
                 <label className={`flex items-center gap-2 p-3 rounded-[var(--radius-sm)] border cursor-pointer transition-micro ${deliveryZone === 'inside' ? 'border-[var(--color-rose-gold)] bg-[var(--color-rose-gold-50)]' : 'border-[var(--color-border)]'}`}>
                   <input type="radio" name="deliveryZone" value="inside" checked={deliveryZone === 'inside'} onChange={() => setDeliveryZone('inside')} className="accent-[var(--color-rose-gold)]" />
-                  <span className="font-ui text-sm text-[var(--color-ink-plum)]">Inside Dhaka (৳80)</span>
+                  <span className="font-ui text-sm text-[var(--color-ink-plum)]">Inside Dhaka (৳{settings.deliveryChargeInside})</span>
                 </label>
                 <label className={`flex items-center gap-2 p-3 rounded-[var(--radius-sm)] border cursor-pointer transition-micro ${deliveryZone === 'outside' ? 'border-[var(--color-rose-gold)] bg-[var(--color-rose-gold-50)]' : 'border-[var(--color-border)]'}`}>
                   <input type="radio" name="deliveryZone" value="outside" checked={deliveryZone === 'outside'} onChange={() => setDeliveryZone('outside')} className="accent-[var(--color-rose-gold)]" />
-                  <span className="font-ui text-sm text-[var(--color-ink-plum)]">Outside Dhaka (৳150)</span>
+                  <span className="font-ui text-sm text-[var(--color-ink-plum)]">Outside Dhaka (৳{settings.deliveryChargeOutside})</span>
                 </label>
               </div>
             </div>
