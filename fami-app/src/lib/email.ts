@@ -5,9 +5,9 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
   const serviceId = process.env.EMAILJS_SERVICE_ID
   const templateId = process.env.EMAILJS_TEMPLATE_ID
   const publicKey = process.env.EMAILJS_PUBLIC_KEY
-  const privateKey = process.env.EMAILJS_PRIVATE_KEY
+  const privateKey = process.env.EMAILJS_PRIVATE_KEY // Optional depending on settings
 
-  if (!serviceId || !templateId || !publicKey || !privateKey) {
+  if (!serviceId || !templateId || !publicKey) {
     console.warn('Email skipped: EmailJS keys not fully configured.')
     return
   }

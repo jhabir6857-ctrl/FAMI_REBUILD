@@ -24,6 +24,25 @@ export async function POST(req: Request) {
       .set({ status: 'confirmed', paymentMethod: 'sslcommerz' })
       .where(eq(orders.id, orderId));
 
+    // Fetch order details for the email
+    const { getOrderById } = await import('@/lib/data')
+    const { sendOrderNotification } = await import('@/lib/email')
+    const orderData = await getOrderById(orderId)
+    
+    if (orderData) {
+      sendOrderNotification({
+        orderId: orderData.id,
+        customerName: orderData.name,
+        customerEmail: orderData.email,
+        customerPhone: orderData.phone,
+        shippingAddress: orderData.shippingAddress,
+        paymentMethod: 'sslcommerz',
+        subtotal: orderData.subtotal,
+        total: orderData.total,
+        items: orderData.items.map(i => ({ name: i.productName, quantity: i.quantity, price: i.price }))
+      }).catch(console.error)
+    }
+
     // Redirect to a success page
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     return NextResponse.redirect(`${baseUrl}/checkout/success?orderId=${orderId}`);
