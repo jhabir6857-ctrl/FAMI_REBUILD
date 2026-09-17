@@ -8,6 +8,7 @@ import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { wishlist } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
+import { ChatBubble } from '@/components/ui/ChatBubble'
 import './globals.css'
 
 const BASE = process.env.NEXTAUTH_URL ?? 'https://famibd.shop'
@@ -65,6 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <WishlistProvider initialIds={initialWishlistIds}>
               {children}
               <CartDrawer />
+              <ChatBubble />
             </WishlistProvider>
           </CartProvider>
         </ToastProvider>
