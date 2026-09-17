@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
           .update(products)
           .set({ stock: sql`${products.stock} - ${quantity}` })
           .where(sql`${products.id} = ${product.id} AND ${products.stock} >= ${quantity}`)
-        if (updated.rowsAffected === 0) {
+        if (updated.rowCount === 0) {
           throw new CheckoutError(`Insufficient stock for ${product.name}`, 409)
         }
       }

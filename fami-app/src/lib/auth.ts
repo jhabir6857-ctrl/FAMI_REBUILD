@@ -90,8 +90,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account && user?.email) {
         // We do a DB lookup here once to get their actual database ID instead of the Google ID
         const dbUsers = await db.select().from(users).where(eq(users.email, user.email))
-        if (dbUsers.length > 0) {
-          const dbUser = dbUsers[0]
+        const dbUser = dbUsers[0]
+        if (dbUser) {
           token.id = String(dbUser.id)
           token.phone = dbUser.phone ?? null
           token.address = dbUser.address ?? null

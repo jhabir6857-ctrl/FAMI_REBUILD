@@ -36,7 +36,7 @@ export default function OrderEmail({
   return (
     <Html>
       <Head />
-      <Preview>FaMi Order #{orderId} Update</Preview>
+      <Preview>{`FaMi Order #${orderId} Update`}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>

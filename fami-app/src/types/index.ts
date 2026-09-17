@@ -49,7 +49,7 @@ export interface Order {
   subtotal: number
   total: number
   pointsEarned: number
-  createdAt: string
+  createdAt: Date
   items: OrderLineItem[]
 }
 
@@ -85,7 +85,7 @@ export interface BlogPost {
   content: string
   imageUrl: string | null
   tags: string[]
-  createdAt: string
+  createdAt: Date
 }
 
 export interface Store {
