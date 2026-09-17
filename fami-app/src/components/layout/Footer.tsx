@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
+import { Instagram, Facebook } from 'lucide-react'
 
 export function Footer() {
   const [email, setEmail] = useState('')
@@ -62,9 +63,13 @@ export function Footer() {
               WhatsApp: +880 1611-158514
             </a>
           </div>
-          <div className="mt-4 flex gap-4">
-            <a href="https://www.instagram.com/fami_2024_?stkn=MXQ3YncybW5qeTdrYg==" target="_blank" rel="noopener noreferrer" className="font-ui text-sm underline underline-offset-2 hover:text-[var(--color-rose-gold-light)]">Instagram</a>
-            <a href="https://www.facebook.com/share/1Esn3Y7zuK/" target="_blank" rel="noopener noreferrer" className="font-ui text-sm underline underline-offset-2 hover:text-[var(--color-rose-gold-light)]">Facebook</a>
+          <div className="mt-6 flex gap-4">
+            <a href="https://www.instagram.com/fami_2024_?stkn=MXQ3YncybW5qeTdrYg==" target="_blank" rel="noopener noreferrer" className="group flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-all duration-300 hover:bg-[var(--color-rose-gold)] hover:scale-110" aria-label="Instagram">
+              <Instagram size={20} className="text-white transition-colors" />
+            </a>
+            <a href="https://www.facebook.com/share/1Esn3Y7zuK/" target="_blank" rel="noopener noreferrer" className="group flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-all duration-300 hover:bg-[#1877F2] hover:scale-110" aria-label="Facebook">
+              <Facebook size={20} className="text-white transition-colors group-hover:fill-current" />
+            </a>
           </div>
         </div>
 
