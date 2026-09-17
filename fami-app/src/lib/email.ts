@@ -1,25 +1,40 @@
-import { Resend } from 'resend'
 import { render } from '@react-email/render'
 import OrderEmail from '@/emails/OrderEmail'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('Email skipped: RESEND_API_KEY not configured.')
+  const serviceId = process.env.EMAILJS_SERVICE_ID
+  const templateId = process.env.EMAILJS_TEMPLATE_ID
+  const publicKey = process.env.EMAILJS_PUBLIC_KEY
+  const privateKey = process.env.EMAILJS_PRIVATE_KEY
+
+  if (!serviceId || !templateId || !publicKey || !privateKey) {
+    console.warn('Email skipped: EmailJS keys not fully configured.')
     return
   }
 
   try {
-    await resend.emails.send({
-      from: 'FaMi <orders@famibd.shop>',
-      reply_to: 'farhanahmed20020@gmail.com',
-      to,
-      subject,
-      html,
+    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service_id: serviceId,
+        template_id: templateId,
+        user_id: publicKey,
+        accessToken: privateKey,
+        template_params: {
+          to_email: to,
+          subject: subject,
+          html_content: html,
+        },
+      }),
     })
+
+    if (!res.ok) {
+      const errorText = await res.text()
+      console.error('Failed to send email via EmailJS:', errorText)
+    }
   } catch (err) {
-    console.error('Failed to send email via Resend:', err)
+    console.error('Failed to send email via EmailJS:', err)
   }
 }
 
