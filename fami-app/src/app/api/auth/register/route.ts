@@ -5,6 +5,11 @@ import { users } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { clientIp, rateLimit } from '@/lib/rate-limit'
+import { Resend } from 'resend'
+import { render } from '@react-email/render'
+import WelcomeEmail from '@/emails/WelcomeEmail'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 const registerSchema = z.object({
   name: z.string().min(2),
@@ -54,6 +59,18 @@ export async function POST(req: NextRequest) {
     const referralCode = generateReferralCode(name)
     try {
       await db.insert(users).values({ name, email, passwordHash, referralCode, role })
+      
+      // Fire and forget welcome email
+      if (process.env.RESEND_API_KEY && process.env.NEXT_PUBLIC_SITE_URL) {
+        const html = await render(WelcomeEmail({ name, referralCode }))
+        resend.emails.send({
+          from: 'FaMi <contact@fami-jewelry.com>', // Placeholder domain, needs to be updated by user
+          to: email,
+          subject: 'Welcome to FaMi',
+          html,
+        }).catch(console.error)
+      }
+
       return NextResponse.json({ success: true })
     } catch (err) {
       const message = err instanceof Error ? err.message : ''
