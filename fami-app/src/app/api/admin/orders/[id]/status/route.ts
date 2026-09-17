@@ -44,5 +44,25 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   }
 
   await updateOrderStatus(orderId, parsed.data.status)
+  
+  if (parsed.data.status === 'confirmed' || parsed.data.status === 'delivered') {
+    const { sendCustomerOrderReceipt } = await import('@/lib/email')
+    const statusMsg = parsed.data.status === 'confirmed' 
+      ? 'Great news! Your order has been confirmed and is being prepared for shipment.'
+      : 'Your order has been delivered! We hope you enjoy your new items.'
+    
+    // Fire and forget
+    sendCustomerOrderReceipt({
+      orderId: existing.id,
+      customerName: existing.name,
+      customerEmail: existing.email,
+      items: existing.items.map(i => ({ name: i.productName, quantity: i.quantity, price: i.price })),
+      subtotal: existing.subtotal,
+      total: existing.total,
+      shippingAddress: existing.shippingAddress,
+      statusMessage: statusMsg,
+    }).catch(console.error)
+  }
+
   return NextResponse.json({ success: true })
 }
