@@ -13,7 +13,7 @@ type StoreSettings = {
 
 export function SettingsClient({ initialSettings }: { initialSettings: StoreSettings }) {
   const router = useRouter()
-  const { showToast } = useToast()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState(initialSettings)
 
@@ -30,10 +30,10 @@ export function SettingsClient({ initialSettings }: { initialSettings: StoreSett
 
       if (!res.ok) throw new Error('Failed to update settings')
       
-      showToast('Settings saved successfully', 'success')
+      toast('Settings saved successfully')
       router.refresh()
     } catch (err: any) {
-      showToast(err.message, 'error')
+      toast(err.message)
     } finally {
       setLoading(false)
     }
