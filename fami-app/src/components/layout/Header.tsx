@@ -14,13 +14,17 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [isVisible, setIsVisible] = useState(true)
+  const [isAtTop, setIsAtTop] = useState(true)
 
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout
 
     const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      setIsAtTop(currentScrollY < 10)
+
       // Always show at the very top
-      if (window.scrollY < 50) {
+      if (currentScrollY < 50) {
         setIsVisible(true)
         return
       }
@@ -34,8 +38,11 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
       // Set a new timeout to show the header when scrolling stops
       scrollTimeout = setTimeout(() => {
         setIsVisible(true)
-      }, 300) // 300ms after scroll stops
+      }, 300)
     }
+
+    // Initial check
+    handleScroll()
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => {
@@ -47,7 +54,13 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
   return (
     <>
       <div className="h-16 w-full" aria-hidden="true" />
-      <header className={`fixed top-0 left-0 w-full z-40 border-b border-[#2b1f2e]/5 bg-[var(--color-parchment)]/80 backdrop-blur-md transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+      <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isVisible ? 'translate-y-0' : '-translate-y-full'
+      } ${
+        isAtTop 
+          ? 'bg-transparent border-transparent' 
+          : 'border-b border-[var(--color-border-muted)]/50 bg-[var(--color-parchment)]/95 backdrop-blur-md shadow-sm'
+      }`}>
         <div className="container-fami flex h-16 items-center justify-between gap-4">
         <button
           onClick={() => setDrawerOpen(true)}
