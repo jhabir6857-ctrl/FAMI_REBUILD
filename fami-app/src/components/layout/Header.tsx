@@ -68,19 +68,24 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
           <span className="font-display text-xl font-medium text-[var(--color-ink-plum)] hidden sm:block">FaMi</span>
         </Link>
 
-        {/* Desktop nav — single-level dropdown per category, no mega-menu wall */}
-        <nav aria-label="Main" className="hidden items-center gap-6 md:flex">
+        {/* Desktop nav — luxury styling with animated underline */}
+        <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
           {categories.slice(0, 6).map(cat => (
             <Link
               key={cat.id}
               href={`/shop/${cat.slug}`}
-              className="font-ui text-sm text-[var(--color-ink-plum)] transition-micro hover:text-[var(--color-rose-gold)]"
+              className="group relative font-ui text-[13px] font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]"
             >
               {cat.name}
+              <span className="absolute -bottom-1.5 left-0 h-[1px] w-0 bg-[var(--color-rose-gold)] transition-all duration-300 ease-out group-hover:w-full" />
             </Link>
           ))}
-          <Link href="/blog" className="font-ui text-sm text-[var(--color-ink-plum)] transition-micro hover:text-[var(--color-rose-gold)]">
+          <Link 
+            href="/blog" 
+            className="group relative font-ui text-[13px] font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]"
+          >
             Journal
+            <span className="absolute -bottom-1.5 left-0 h-[1px] w-0 bg-[var(--color-rose-gold)] transition-all duration-300 ease-out group-hover:w-full" />
           </Link>
         </nav>
 
@@ -150,23 +155,25 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
                 <X size={20} aria-hidden="true" />
               </button>
             </div>
-            {categories.map(cat => (
-              <Link
-                key={cat.id}
-                href={`/shop/${cat.slug}`}
-                onClick={() => setDrawerOpen(false)}
-                className="font-ui py-2.5 text-sm text-[var(--color-ink-plum)]"
-              >
-                {cat.name}
+            <div className="flex flex-col gap-1 mt-4">
+              {categories.map(cat => (
+                <Link
+                  key={cat.id}
+                  href={`/shop/${cat.slug}`}
+                  onClick={() => setDrawerOpen(false)}
+                  className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]"
+                >
+                  {cat.name}
+                </Link>
+              ))}
+              <hr className="divider-gold my-4" />
+              <Link href="/blog" onClick={() => setDrawerOpen(false)} className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]">
+                Journal
               </Link>
-            ))}
-            <hr className="divider-gold my-3" />
-            <Link href="/blog" onClick={() => setDrawerOpen(false)} className="font-ui py-2.5 text-sm text-[var(--color-ink-plum)]">
-              Journal
-            </Link>
-            <Link href={isLoggedIn ? '/account' : '/login'} onClick={() => setDrawerOpen(false)} className="font-ui py-2.5 text-sm text-[var(--color-ink-plum)]">
-              {isLoggedIn ? 'My account' : 'Sign in'}
-            </Link>
+              <Link href={isLoggedIn ? '/account' : '/login'} onClick={() => setDrawerOpen(false)} className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]">
+                {isLoggedIn ? 'My Account' : 'Sign In'}
+              </Link>
+            </div>
           </div>
         </div>
       )}
