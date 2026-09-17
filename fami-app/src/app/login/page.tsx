@@ -57,7 +57,7 @@ function LoginForm() {
         />
         <div className="relative z-10 flex flex-col items-center gap-5 text-center">
           {/* Logo medallion — white seal on dark plum */}
-          <div className="w-24 h-24 rounded-full bg-white/95 flex items-center justify-center shadow-2xl ring-1 ring-white/20 animate-scale-in">
+          <Link href="/" aria-label="Return to homepage" className="w-24 h-24 rounded-full bg-white/95 flex items-center justify-center shadow-2xl ring-1 ring-white/20 animate-scale-in hover:scale-105 transition-transform duration-300">
             <Image
               src="/logo.jpg"
               alt="FaMi monogram"
@@ -66,7 +66,7 @@ function LoginForm() {
               className="object-contain rounded-full"
               priority
             />
-          </div>
+          </Link>
           <div className="animate-fade-in-up delay-150">
             <p className="font-display text-3xl font-medium text-white tracking-wide">FaMi</p>
             <p className="font-ui text-sm text-[var(--color-rose-gold-light)] tracking-widest uppercase mt-1">
