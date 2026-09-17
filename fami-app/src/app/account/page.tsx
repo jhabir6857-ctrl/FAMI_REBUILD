@@ -14,6 +14,12 @@ export default async function AccountPage() {
   if (!session?.user) redirect('/login')
 
   const userId = Number(session.user.id)
+  
+  // Instantly route Admins to the Admin Dashboard
+  if (session.user.role === 'admin') {
+    redirect('/admin')
+  }
+
   const [user, orders, categories] = await Promise.all([
     getUserById(userId),
     getUserOrders(userId),
