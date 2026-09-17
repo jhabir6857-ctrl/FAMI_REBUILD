@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, Search, ShoppingBag, User, X } from 'lucide-react'
@@ -8,14 +8,46 @@ import { useCart } from '@/context/CartContext'
 import type { Category } from '@/types'
 
 export function Header({ categories, isLoggedIn }: { categories: Category[]; isLoggedIn: boolean }) {
-  const { totalItems } = useCart()
+  const { totalItems, setDrawerOpen: setCartDrawerOpen } = useCart()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [isVisible, setIsVisible] = useState(true)
+
+  useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout
+
+    const handleScroll = () => {
+      // Always show at the very top
+      if (window.scrollY < 50) {
+        setIsVisible(true)
+        return
+      }
+
+      // Hide while actively scrolling
+      setIsVisible(false)
+
+      // Clear the previous timeout
+      clearTimeout(scrollTimeout)
+
+      // Set a new timeout to show the header when scrolling stops
+      scrollTimeout = setTimeout(() => {
+        setIsVisible(true)
+      }, 300) // 300ms after scroll stops
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
+  }, [])
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--color-border-muted)] bg-[var(--color-parchment)]/95 backdrop-blur-sm">
-      <div className="container-fami flex h-16 items-center justify-between gap-4">
+    <>
+      <div className="h-16 w-full" aria-hidden="true" />
+      <header className={`fixed top-0 left-0 w-full z-40 border-b border-[#2b1f2e]/5 bg-[var(--color-parchment)]/80 backdrop-blur-md transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className="container-fami flex h-16 items-center justify-between gap-4">
         <button
           onClick={() => setDrawerOpen(true)}
           aria-label="Open menu"
@@ -64,14 +96,14 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
           <Link href={isLoggedIn ? '/account' : '/login'} aria-label="Account" className="touch-target hidden items-center justify-center md:flex">
             <User size={20} aria-hidden="true" />
           </Link>
-          <Link href="/cart" aria-label={`Cart, ${totalItems} item${totalItems === 1 ? '' : 's'}`} className="touch-target relative flex items-center justify-center">
+          <button onClick={() => setCartDrawerOpen(true)} aria-label={`Cart, ${totalItems} item${totalItems === 1 ? '' : 's'}`} className="touch-target relative flex items-center justify-center">
             <ShoppingBag size={20} aria-hidden="true" />
             {totalItems > 0 && (
               <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-rose-gold)] font-ui text-[10px] font-medium text-white">
                 {totalItems > 9 ? '9+' : totalItems}
               </span>
             )}
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -107,8 +139,8 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
       {/* Mobile drawer */}
       {drawerOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <button aria-label="Close menu" className="absolute inset-0 bg-[var(--color-ink-plum)]/40" onClick={() => setDrawerOpen(false)} />
-          <div className="absolute inset-y-0 left-0 flex w-72 flex-col gap-1 bg-white p-6">
+          <button aria-label="Close menu" className="absolute inset-0 bg-[var(--color-ink-plum)]/40 animate-fade-in" onClick={() => setDrawerOpen(false)} />
+          <div className="absolute inset-y-0 left-0 flex w-72 flex-col gap-1 bg-white p-6 animate-slide-in-left">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Image src="/logo.jpg" alt="FaMi" width={32} height={32} className="object-contain" />
@@ -139,5 +171,6 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
         </div>
       )}
     </header>
+    </>
   )
 }

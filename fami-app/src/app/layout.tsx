@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { CartProvider } from '@/context/CartContext'
 import { WishlistProvider } from '@/context/WishlistContext'
+import { CartDrawer } from '@/components/cart/CartDrawer'
+import { ToastProvider } from '@/context/ToastContext'
 import { Analytics } from '@/components/layout/Analytics'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
@@ -58,11 +60,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className="font-ui antialiased">
-        <CartProvider>
-          <WishlistProvider initialIds={initialWishlistIds}>
-            {children}
-          </WishlistProvider>
-        </CartProvider>
+        <ToastProvider>
+          <CartProvider>
+            <WishlistProvider initialIds={initialWishlistIds}>
+              {children}
+              <CartDrawer />
+            </WishlistProvider>
+          </CartProvider>
+        </ToastProvider>
         <Analytics />
       </body>
     </html>

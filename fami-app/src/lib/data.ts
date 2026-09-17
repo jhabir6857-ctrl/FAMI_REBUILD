@@ -96,12 +96,18 @@ interface GetProductsOptions {
   isNew?: boolean
   categorySlug?: string
   limit?: number
+  sort?: string
+  inStock?: boolean
 }
 
 export async function getProducts(opts: GetProductsOptions = {}): Promise<Product[]> {
   const conditions = []
   if (opts.featured) conditions.push(eq(products.isFeatured, true))
   if (opts.isNew) conditions.push(eq(products.isNew, true))
+  
+  if (opts.inStock) {
+    conditions.push(sql`${products.stock} > 0`)
+  }
 
   let categoryId: number | undefined
   if (opts.categorySlug) {
@@ -117,7 +123,11 @@ export async function getProducts(opts: GetProductsOptions = {}): Promise<Produc
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
     .where(conditions.length ? and(...conditions) : undefined)
-    .orderBy(desc(products.createdAt))
+    .orderBy(
+      opts.sort === 'price-asc' ? sql`${products.price} ASC` :
+      opts.sort === 'price-desc' ? desc(products.price) :
+      desc(products.createdAt)
+    )
 
   const rows = opts.limit ? await query.limit(opts.limit) : await query
   return rows.map(r => toProduct(r.product, r.category))

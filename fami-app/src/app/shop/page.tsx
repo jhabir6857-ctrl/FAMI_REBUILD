@@ -1,20 +1,24 @@
 import { Suspense } from 'react'
-import { getProducts, getCategories, getStores } from '@/lib/data'
+import { getProducts, getCategories } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { SkeletonGrid } from '@/components/ui/SkeletonCard'
+import { ShopControls } from '@/components/shop/ShopControls'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Shop' }
 
-export default async function ShopPage() {
-  const [products, categories, stores, session] = await Promise.all([
-    getProducts(),
+export default async function ShopPage(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const searchParams = await props.searchParams;
+  const sort = typeof searchParams.sort === 'string' ? searchParams.sort : undefined;
+  const inStock = searchParams.inStock === 'true';
+
+  const [products, categories, session] = await Promise.all([
+    getProducts({ sort, inStock }),
     getCategories(),
-    getStores(),
     auth(),
   ])
   const isLoggedIn = Boolean(session?.user)
@@ -23,10 +27,7 @@ export default async function ShopPage() {
     <>
       <Header categories={categories} isLoggedIn={isLoggedIn} />
       <main className="container-fami py-10">
-        <div className="mb-8">
-          <h1 className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)]">All products</h1>
-          <p className="font-ui text-sm text-[var(--color-text-muted)] mt-2">{products.length} items</p>
-        </div>
+        <ShopControls categories={categories} totalItems={products.length} />
         <Suspense fallback={<SkeletonGrid count={12} />}>
           {products.length === 0 ? (
             <div className="py-20 text-center">
@@ -40,8 +41,9 @@ export default async function ShopPage() {
           )}
         </Suspense>
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn={isLoggedIn} />
     </>
   )
 }
+

@@ -1,9 +1,9 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { pgTable, serial, text, integer, boolean, timestamp } from 'drizzle-orm/pg-core'
 import { relations, sql } from 'drizzle-orm'
 
-// ── Categories ──────────────────────────────────────────────
-export const categories = sqliteTable('categories', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+// ── Categories ────────────────────────────────────────────────────────────
+export const categories = pgTable('categories', {
+  id: serial('id').primaryKey(),
   slug: text('slug').notNull().unique(),
   name: text('name').notNull(),
   description: text('description'),
@@ -11,34 +11,30 @@ export const categories = sqliteTable('categories', {
   sortOrder: integer('sort_order').notNull().default(0),
 })
 
-// ── Products ────────────────────────────────────────────────
-// price / compareAtPrice are stored as whole BDT taka (integers) — no paisa precision needed for this catalog.
-export const products = sqliteTable('products', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+// ── Products ──────────────────────────────────────────────────────────────
+export const products = pgTable('products', {
+  id: serial('id').primaryKey(),
   slug: text('slug').notNull().unique(),
   name: text('name').notNull(),
   description: text('description').notNull().default(''),
   price: integer('price').notNull(),
   compareAtPrice: integer('compare_at_price'),
   stock: integer('stock').notNull().default(0),
-  // JSON-encoded string array, e.g. '["https://res.cloudinary.com/.../a.jpg"]'
   imageUrls: text('image_urls').notNull().default('[]'),
-  // Optional PDP gallery clip — Cloudinary hosted, 9:16, 3-5s, muted loop.
-  // Strictly optional: absence must never produce a broken gallery slot.
   videoUrl: text('video_url'),
   categoryId: integer('category_id').notNull().references(() => categories.id),
-  isNew: integer('is_new', { mode: 'boolean' }).notNull().default(false),
-  isFeatured: integer('is_featured', { mode: 'boolean' }).notNull().default(false),
-  createdAt: text('created_at').notNull().default(sql`(current_timestamp)`),
+  isNew: boolean('is_new').notNull().default(false),
+  isFeatured: boolean('is_featured').notNull().default(false),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
 export const productsRelations = relations(products, ({ one }) => ({
   category: one(categories, { fields: [products.categoryId], references: [categories.id] }),
 }))
 
-// ── Users ───────────────────────────────────────────────────
-export const users = sqliteTable('users', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+// ── Users ─────────────────────────────────────────────────────────────────
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
@@ -46,21 +42,19 @@ export const users = sqliteTable('users', {
   address: text('address'),
   loyaltyPoints: integer('loyalty_points').notNull().default(0),
   referralCode: text('referral_code').notNull().unique(),
-  // Admin role assignment (Phase 3 gap-fill): seed one hardcoded admin,
-  // promote others later with `UPDATE users SET role = 'admin' WHERE email = '...'`.
   role: text('role', { enum: ['customer', 'admin'] }).notNull().default('customer'),
-  createdAt: text('created_at').notNull().default(sql`(current_timestamp)`),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
-// ── Orders ──────────────────────────────────────────────────
-export const orders = sqliteTable('orders', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+// ── Orders ────────────────────────────────────────────────────────────────
+export const orders = pgTable('orders', {
+  id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id),
   name: text('name').notNull(),
   email: text('email').notNull(),
   phone: text('phone').notNull(),
   shippingAddress: text('shipping_address').notNull(),
-  paymentMethod: text('payment_method', { enum: ['cod', 'whatsapp', 'bkash', 'nagad'] }).notNull(),
+  paymentMethod: text('payment_method', { enum: ['cod', 'whatsapp', 'bkash', 'nagad', 'sslcommerz'] }).notNull(),
   status: text('status', { enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'] })
     .notNull()
     .default('pending'),
@@ -68,15 +62,14 @@ export const orders = sqliteTable('orders', {
   total: integer('total').notNull(),
   pointsEarned: integer('points_earned').notNull().default(0),
   notes: text('notes'),
-  createdAt: text('created_at').notNull().default(sql`(current_timestamp)`),
+  tranId: text('tran_id'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
-export const orderItems = sqliteTable('order_items', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const orderItems = pgTable('order_items', {
+  id: serial('id').primaryKey(),
   orderId: integer('order_id').notNull().references(() => orders.id),
   productId: integer('product_id').notNull().references(() => products.id),
-  // Denormalized on purpose: order history must stay accurate even if the
-  // product is later renamed, re-priced, or deleted.
   productName: text('product_name').notNull(),
   productImage: text('product_image').notNull().default(''),
   price: integer('price').notNull(),
@@ -90,39 +83,38 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
   order: one(orders, { fields: [orderItems.orderId], references: [orders.id] }),
 }))
 
-// ── Wishlist ────────────────────────────────────────────────
-export const wishlist = sqliteTable('wishlist', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+// ── Wishlist ──────────────────────────────────────────────────────────────
+export const wishlist = pgTable('wishlist', {
+  id: serial('id').primaryKey(),
   userId: integer('user_id').notNull().references(() => users.id),
   productId: integer('product_id').notNull().references(() => products.id),
-  createdAt: text('created_at').notNull().default(sql`(current_timestamp)`),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
-// ── Blog ────────────────────────────────────────────────────
-export const blogPosts = sqliteTable('blog_posts', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+// ── Blog ──────────────────────────────────────────────────────────────────
+export const blogPosts = pgTable('blog_posts', {
+  id: serial('id').primaryKey(),
   slug: text('slug').notNull().unique(),
   title: text('title').notNull(),
   excerpt: text('excerpt').notNull().default(''),
   content: text('content').notNull().default(''),
   imageUrl: text('image_url'),
-  // JSON-encoded string array — kept simple, no separate tags table needed at this scale.
   tags: text('tags').notNull().default('[]'),
-  createdAt: text('created_at').notNull().default(sql`(current_timestamp)`),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
-// ── Store locations ─────────────────────────────────────────
-export const stores = sqliteTable('stores', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+// ── Store locations ───────────────────────────────────────────────────────
+export const stores = pgTable('stores', {
+  id: serial('id').primaryKey(),
   name: text('name').notNull(),
   address: text('address').notNull(),
   hours: text('hours').notNull().default(''),
   phone: text('phone'),
 })
 
-// 🛡️ Rate Limits 🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
-export const rateLimits = sqliteTable('rate_limits', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+// ── Rate Limits ───────────────────────────────────────────────────────────
+export const rateLimits = pgTable('rate_limits', {
+  id: serial('id').primaryKey(),
   key: text('key').notNull(),
   timestamp: integer('timestamp').notNull(),
 })

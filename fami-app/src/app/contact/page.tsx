@@ -1,4 +1,4 @@
-import { getCategories, getStores } from '@/lib/data'
+import { getCategories } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -12,9 +12,8 @@ export const metadata: Metadata = {
 }
 
 export default async function ContactPage() {
-  const [categories, stores, session] = await Promise.all([
+  const [categories, session] = await Promise.all([
     getCategories(),
-    getStores(),
     auth(),
   ])
   const isLoggedIn = Boolean(session?.user)
@@ -51,7 +50,7 @@ export default async function ContactPage() {
                 For order queries, product questions, or a styling consult — reach us directly on WhatsApp for the fastest response.
               </p>
               <a
-                href="https://wa.me/8801XXXXXXXXX"
+                href="https://wa.me/8801611158514"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 h-11 px-6 rounded-[var(--radius-md)] border border-[var(--color-whatsapp)] text-[var(--color-whatsapp)] font-ui text-sm font-medium hover:bg-[var(--color-whatsapp)] hover:text-white transition-micro"
@@ -70,35 +69,16 @@ export default async function ContactPage() {
                 Prefer email? Write to us at:
               </p>
               <a
-                href="mailto:hello@famibd.shop"
+                href="mailto:farhanahmed20020@gmail.com"
                 className="font-ui text-sm font-medium text-[var(--color-rose-gold)] hover:underline"
               >
-                hello@famibd.shop
+                farhanahmed20020@gmail.com
               </a>
             </div>
-
-            {/* Store locations */}
-            {stores.length > 0 && (
-              <div>
-                <h2 className="font-display text-xl font-medium text-[var(--color-ink-plum)] mb-3">Visit us in store</h2>
-                <div className="flex flex-col gap-4">
-                  {stores.map(store => (
-                    <div key={store.id} className="flex flex-col gap-0.5">
-                      <p className="font-ui text-sm font-medium text-[var(--color-ink-plum)]">{store.name}</p>
-                      <p className="font-ui text-xs text-[var(--color-text-muted)]">{store.address}</p>
-                      <p className="font-ui text-xs text-[var(--color-text-muted)]">{store.hours}</p>
-                      {store.phone && (
-                        <a href={`tel:${store.phone}`} className="font-ui text-xs text-[var(--color-rose-gold)] hover:underline">{store.phone}</a>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn={isLoggedIn} />
     </>
   )

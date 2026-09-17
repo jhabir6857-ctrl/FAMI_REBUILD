@@ -20,7 +20,8 @@ export default async function AdminBlogPage() {
         {posts.length === 0 ? (
           <p className="p-5 text-sm text-[#8a8a8a]">No posts yet. <Link href="/admin/blog/new" className="underline">Write one →</Link></p>
         ) : (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#e0e0e0] text-left text-xs uppercase tracking-wide text-[#8a8a8a]">
                 <th className="px-5 py-3 font-medium">Title</th>
@@ -49,6 +50,7 @@ export default async function AdminBlogPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>

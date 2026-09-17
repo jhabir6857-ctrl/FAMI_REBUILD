@@ -1,22 +1,21 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
-import { getUserWishlist, getCategories, getStores } from '@/lib/data'
+import { getUserWishlist, getCategories } from '@/lib/data'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { ProductCard } from '@/components/shop/ProductCard'
+import { EmptyState } from '@/components/ui/EmptyState'
 
 export default async function WishlistPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
 
   const userId = Number(session.user.id)
-  const [wishlistItems, categories, stores] = await Promise.all([
+  const [wishlistItems, categories] = await Promise.all([
     getUserWishlist(userId),
     getCategories(),
-    getStores(),
-  ])
+    ])
 
   return (
     <>
@@ -26,9 +25,10 @@ export default async function WishlistPage() {
           Wishlist <span className="font-ui text-xl text-[var(--color-text-muted)] font-normal">({wishlistItems.length})</span>
         </h1>
         {wishlistItems.length === 0 ? (
-          <div className="py-20 text-center">
-            <p className="font-editorial text-xl text-[var(--color-text-muted)] mb-4">Your wishlist is empty</p>
-            <Link href="/shop" className="font-ui text-sm text-[var(--color-rose-gold)] hover:underline">Explore products and save your favourites →</Link>
+          <div className="py-10 md:py-20 flex justify-center">
+            <div className="w-full max-w-md">
+              <EmptyState type="wishlist" />
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
@@ -36,8 +36,9 @@ export default async function WishlistPage() {
           </div>
         )}
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn />
     </>
   )
 }
+

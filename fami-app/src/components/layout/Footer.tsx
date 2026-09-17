@@ -4,9 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
-import type { Store } from '@/types'
 
-export function Footer({ stores }: { stores: Store[] }) {
+export function Footer() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [newsletterError, setNewsletterError] = useState<string | null>(null)
@@ -53,9 +52,19 @@ export function Footer({ stores }: { stores: Store[] }) {
             <span className="font-display text-2xl font-medium text-white tracking-wide">FaMi</span>
           </div>
           <p className="font-ui text-sm">Curated jewellery, bags, dresses and skincare.</p>
-          <div className="mt-2 flex gap-4">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="font-ui text-sm underline underline-offset-2">Instagram</a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="font-ui text-sm underline underline-offset-2">Facebook</a>
+          <div className="mt-4 flex flex-col gap-2">
+            <a href="mailto:farhanahmed20020@gmail.com" className="font-ui text-sm flex items-center gap-2 hover:text-[var(--color-rose-gold-light)] transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+              farhanahmed20020@gmail.com
+            </a>
+            <a href="https://wa.me/8801611158514" target="_blank" rel="noopener noreferrer" className="font-ui text-sm flex items-center gap-2 hover:text-[var(--color-rose-gold-light)] transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"></path><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"></path></svg>
+              WhatsApp: +880 1611-158514
+            </a>
+          </div>
+          <div className="mt-4 flex gap-4">
+            <a href="https://www.instagram.com/fami_2024_?stkn=MXQ3YncybW5qeTdrYg==" target="_blank" rel="noopener noreferrer" className="font-ui text-sm underline underline-offset-2 hover:text-[var(--color-rose-gold-light)]">Instagram</a>
+            <a href="https://www.facebook.com/share/1Esn3Y7zuK/" target="_blank" rel="noopener noreferrer" className="font-ui text-sm underline underline-offset-2 hover:text-[var(--color-rose-gold-light)]">Facebook</a>
           </div>
         </div>
 
@@ -66,23 +75,15 @@ export function Footer({ stores }: { stores: Store[] }) {
           <Link href="/blog" className="font-ui text-sm">Journal</Link>
           <Link href="/about" className="font-ui text-sm">About FaMi</Link>
           <Link href="/contact" className="font-ui text-sm">Contact us</Link>
-          <Link href="/store-locator" className="font-ui text-sm">Store locator</Link>
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="font-ui text-xs uppercase tracking-wide text-white/50">Visit us</p>
-          {stores.length === 0 && <p className="font-ui text-sm text-white/60">Store locations coming soon</p>}
-          {stores.map(store => (
-            <div key={store.id} className="font-ui text-sm flex flex-col gap-0.5">
-              <p className="text-white font-medium">{store.name}</p>
-              <p className="text-white/60">{store.address}</p>
-              <p className="text-white/60">{store.hours}</p>
-              {store.phone && (
-                <a href={`tel:${store.phone}`} className="text-[var(--color-rose-gold-light)] hover:underline">{store.phone}</a>
-              )}
-            </div>
-          ))}
-          <Link href="/store-locator" className="font-ui text-xs text-white/50 underline underline-offset-2 mt-1">View all locations →</Link>
+          <p className="font-ui text-xs uppercase tracking-wide text-white/50">Need Help?</p>
+          <Link href="/loyalty" className="font-ui text-sm flex items-center gap-2 hover:text-[var(--color-rose-gold-light)] transition-colors">Loyalty &amp; Rewards</Link>
+          <Link href="/contact" className="font-ui text-sm flex items-center gap-2 hover:text-[var(--color-rose-gold-light)] transition-colors">Customer Support</Link>
+          <p className="font-ui text-sm text-white/60 mt-2">
+            FaMi is an exclusive online boutique. We deliver directly to you across Bangladesh.
+          </p>
         </div>
 
         <div className="flex flex-col gap-3">

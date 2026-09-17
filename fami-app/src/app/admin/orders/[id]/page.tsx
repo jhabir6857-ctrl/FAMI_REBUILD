@@ -36,7 +36,8 @@ export default async function AdminOrderDetailPage({ params }: Props) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded border border-[#e0e0e0] bg-white p-5 lg:col-span-2">
           <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#8a8a8a]">Items</h2>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#f0f0f0] text-left text-xs uppercase tracking-wide text-[#8a8a8a]">
                 <th className="pb-2 font-medium">Product</th>
@@ -56,6 +57,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
               ))}
             </tbody>
           </table>
+          </div>
           <div className="mt-4 flex flex-col items-end gap-1 border-t border-[#f0f0f0] pt-4 text-sm">
             <div className="flex w-48 justify-between text-[#4a4a4a]"><span>Subtotal</span><span>{formatBDT(order.subtotal)}</span></div>
             <div className="flex w-48 justify-between text-[#4a4a4a]"><span>Shipping</span><span>{shipping === 0 ? 'Free' : formatBDT(shipping)}</span></div>

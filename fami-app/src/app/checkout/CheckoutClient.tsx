@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/Button'
 import { formatBDT } from '@/lib/currency'
 import type { PaymentMethod } from '@/types'
 
-const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; hint: string }[] = [
+const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; hint: string; disabled?: boolean }[] = [
+  { value: 'sslcommerz', label: 'Secure Online Payment (Coming Soon)', hint: 'Pay securely via Cards, Mobile Banking (bKash/Nagad), or Net Banking.', disabled: true },
   { value: 'cod', label: 'Cash on delivery', hint: 'Pay in cash when your order arrives.' },
   { value: 'bkash', label: 'bKash', hint: 'We will send you a bKash payment request after confirming.' },
   { value: 'nagad', label: 'Nagad', hint: 'We will send you a Nagad payment request after confirming.' },
@@ -70,13 +71,33 @@ export function CheckoutClient() {
       const data = await res.json() as { success?: boolean; orderId?: number; error?: string }
       if (!res.ok || !data.success) {
         setError(data.error ?? 'Something went wrong. Please try again.')
+        setLoading(false)
         return
       }
+      
       clearCart()
+
+      if (paymentMethod === 'sslcommerz' && data.orderId) {
+        // Initialize SSLCommerz session
+        const sslRes = await fetch('/api/checkout/sslcommerz', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: data.orderId }),
+        })
+        const sslData = await sslRes.json()
+        if (sslRes.ok && sslData.url) {
+          window.location.href = sslData.url
+          return
+        } else {
+          setError(sslData.error ?? 'Failed to initialize payment gateway.')
+          setLoading(false)
+          return
+        }
+      }
+
       void router.push(`/checkout/success?orderId=${data.orderId ?? ''}`)
     } catch {
       setError('Network error. Please check your connection and try again.')
-    } finally {
       setLoading(false)
     }
   }
@@ -172,10 +193,11 @@ export function CheckoutClient() {
                 key={opt.value}
                 htmlFor={`pm-${opt.value}`}
                 className={[
-                  'flex items-start gap-3 p-4 rounded-[var(--radius-md)] border cursor-pointer transition-micro',
+                  'flex items-start gap-3 p-4 rounded-[var(--radius-md)] border transition-micro',
+                  opt.disabled ? 'opacity-50 cursor-not-allowed bg-[var(--color-parchment-100)]' : 'cursor-pointer',
                   paymentMethod === opt.value
                     ? 'border-[var(--color-rose-gold)] bg-[var(--color-rose-gold-50)]'
-                    : 'border-[var(--color-border)] hover:border-[var(--color-ink-plum-200)]',
+                    : 'border-[var(--color-border)] ' + (opt.disabled ? '' : 'hover:border-[var(--color-ink-plum-200)]'),
                 ].join(' ')}
               >
                 <input
@@ -184,10 +206,11 @@ export function CheckoutClient() {
                   name="paymentMethod"
                   value={opt.value}
                   checked={paymentMethod === opt.value}
-                  onChange={() => setPaymentMethod(opt.value)}
-                  className="mt-0.5 accent-[var(--color-rose-gold)]"
+                  onChange={() => { if (!opt.disabled) setPaymentMethod(opt.value) }}
+                  disabled={opt.disabled}
+                  className="mt-0.5 accent-[var(--color-rose-gold)] disabled:opacity-50"
                 />
-                <div>
+                <div className={opt.disabled ? 'opacity-75' : ''}>
                   <p className="font-ui text-sm font-medium text-[var(--color-ink-plum)]">{opt.label}</p>
                   <p className="font-ui text-xs text-[var(--color-text-muted)] mt-0.5">{opt.hint}</p>
                 </div>

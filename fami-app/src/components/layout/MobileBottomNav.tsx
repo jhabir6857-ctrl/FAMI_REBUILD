@@ -7,7 +7,7 @@ import { useCart } from '@/context/CartContext'
 
 export function MobileBottomNav({ isLoggedIn }: { isLoggedIn: boolean }) {
   const pathname = usePathname()
-  const { totalItems } = useCart()
+  const { totalItems, setDrawerOpen, isStickyCartVisible } = useCart()
 
   // Four dedicated tabs: Home / Shop / Wishlist / Cart
   // Account is always reachable from the header's user icon.
@@ -21,24 +21,21 @@ export function MobileBottomNav({ isLoggedIn }: { isLoggedIn: boolean }) {
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[var(--color-border-muted)] bg-white pb-[env(safe-area-inset-bottom)] md:hidden"
+      className={`fixed inset-x-0 bottom-0 z-40 flex border-t border-[var(--color-border-muted)] bg-white pb-[env(safe-area-inset-bottom)] md:hidden transform transition-transform duration-400 ease-out ${isStickyCartVisible ? 'translate-y-full' : 'translate-y-0'}`}
     >
       {items.map(({ href, label, icon: Icon }) => {
         const active = pathname === href || (href !== '/' && pathname.startsWith(href))
-        return (
-          <Link
-            key={href}
-            href={href}
-            aria-current={active ? 'page' : undefined}
-            className="touch-target relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2"
-          >
+        const isCart = href === '/cart'
+        
+        const content = (
+          <>
             <Icon
               size={20}
               color={active ? 'var(--color-rose-gold)' : 'var(--color-ink-plum)'}
               aria-hidden="true"
             />
             {/* Cart badge — show item count dot on the Cart tab */}
-            {href === '/cart' && totalItems > 0 && (
+            {isCart && totalItems > 0 && (
               <span
                 className="absolute right-[calc(50%-14px)] top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-rose-gold)] font-ui text-[9px] font-medium text-white"
                 aria-hidden="true"
@@ -52,6 +49,29 @@ export function MobileBottomNav({ isLoggedIn }: { isLoggedIn: boolean }) {
             >
               {label}
             </span>
+          </>
+        )
+
+        if (isCart) {
+          return (
+            <button
+              key={href}
+              onClick={() => setDrawerOpen(true)}
+              className="touch-target relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2"
+            >
+              {content}
+            </button>
+          )
+        }
+
+        return (
+          <Link
+            key={href}
+            href={href}
+            aria-current={active ? 'page' : undefined}
+            className="touch-target relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2"
+          >
+            {content}
           </Link>
         )
       })}

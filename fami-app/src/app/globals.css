@@ -71,8 +71,8 @@
      "Order via WhatsApp" CTA outline/fill per the PDP spec. */
   --color-whatsapp: #25d366;
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
 }
 
 @layer base {
@@ -96,6 +96,11 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Tight kerning for display headlines */
+  .font-display, h1, h2 {
+    letter-spacing: -0.02em;
+  }
 }
 
 @layer utilities {
@@ -111,13 +116,13 @@
     }
   }
 
-  /* §3: 64px vertical rhythm between major sections on desktop, 40px mobile. */
+  /* §3: 96px vertical rhythm between major sections on desktop, 64px mobile. */
   .section-gap {
-    padding-block: 40px;
+    padding-block: 64px;
   }
   @media (min-width: 768px) {
     .section-gap {
-      padding-block: 64px;
+      padding-block: 96px;
     }
   }
 
@@ -167,16 +172,25 @@
      CSS-only: no JavaScript, no layout shift.
      All are cut to 0.01ms by the prefers-reduced-motion guard above. */
   .animate-fade-in {
-    animation: fami-fade-in 0.55s ease-out both;
+    animation: fami-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   .animate-fade-in-up {
-    animation: fami-fade-in-up 0.6s ease-out both;
+    animation: fami-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   .animate-slide-in-right {
-    animation: fami-slide-in-right 0.65s ease-out both;
+    animation: fami-slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   .animate-scale-in {
-    animation: fami-scale-in 0.4s ease-out both;
+    animation: fami-scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .animate-fami-pulse {
+    animation: fami-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  .animate-ken-burns {
+    animation: fami-ken-burns 20s ease-out both;
+  }
+  .animate-scroll-indicator {
+    animation: fami-scroll-indicator 2s ease-in-out infinite;
   }
 
   /* Stagger helpers — compose with animate-* classes */
@@ -186,6 +200,9 @@
   .delay-350 { animation-delay: 350ms; }
   .delay-450 { animation-delay: 450ms; }
   .delay-550 { animation-delay: 550ms; }
+  .animate-slide-in-left {
+    animation: fami-slide-in-left 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 }
 
 /* ── Keyframe definitions (outside @layer to avoid specificity issues) ── */
@@ -201,8 +218,25 @@
   from { opacity: 0; transform: translateX(24px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+@keyframes fami-slide-in-left {
+  from { opacity: 0; transform: translateX(-100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
 @keyframes fami-scale-in {
   from { opacity: 0; transform: scale(0.96); }
   to   { opacity: 1; transform: scale(1); }
 }
-
+@keyframes fami-pulse {
+  0%   { transform: scale(0.95); opacity: 0.5; }
+  50%  { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}
+@keyframes fami-ken-burns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+@keyframes fami-scroll-indicator {
+  0% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(6px); opacity: 0.3; }
+  100% { transform: translateY(0); opacity: 1; }
+}

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
-import { getUserById, getCategories, getStores } from '@/lib/data'
+import { getUserById, getCategories } from '@/lib/data'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
@@ -14,11 +14,10 @@ export default async function LoyaltyPage() {
   if (!session?.user) redirect('/login?callbackUrl=/loyalty')
 
   const userId = Number(session.user.id)
-  const [user, categories, stores] = await Promise.all([
+  const [user, categories] = await Promise.all([
     getUserById(userId),
     getCategories(),
-    getStores(),
-  ])
+    ])
   if (!user) redirect('/login')
 
   const referralUrl = `https://famibd.shop/register?ref=${user.referralCode}`
@@ -163,8 +162,9 @@ export default async function LoyaltyPage() {
           </div>
         </div>
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn />
     </>
   )
 }
+

@@ -36,30 +36,32 @@ export default async function AdminDashboardPage() {
         {stats.recentOrders.length === 0 ? (
           <p className="p-5 text-sm text-[#8a8a8a]">No orders yet.</p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-[#e0e0e0] text-left text-xs uppercase tracking-wide text-[#8a8a8a]">
-                <th className="px-5 py-3 font-medium">Order</th>
-                <th className="px-5 py-3 font-medium">Customer</th>
-                <th className="px-5 py-3 font-medium">Total</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Placed</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.recentOrders.map(order => (
-                <tr key={order.id} className="border-b border-[#f0f0f0] last:border-0 hover:bg-[#fafafa]">
-                  <td className="px-5 py-3">
-                    <Link href={`/admin/orders/${order.id}`} className="font-medium hover:underline">#{order.id}</Link>
-                  </td>
-                  <td className="px-5 py-3">{order.name}</td>
-                  <td className="px-5 py-3">{formatBDT(order.total)}</td>
-                  <td className="px-5 py-3"><StatusPill status={order.status} /></td>
-                  <td className="px-5 py-3 text-[#8a8a8a]">{new Date(order.createdAt).toLocaleDateString('en-BD', { dateStyle: 'medium' })}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[#e0e0e0] text-left text-xs uppercase tracking-wide text-[#8a8a8a]">
+                  <th className="px-5 py-3 font-medium">Order</th>
+                  <th className="px-5 py-3 font-medium">Customer</th>
+                  <th className="px-5 py-3 font-medium">Total</th>
+                  <th className="px-5 py-3 font-medium">Status</th>
+                  <th className="px-5 py-3 font-medium">Placed</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {stats.recentOrders.map(order => (
+                  <tr key={order.id} className="border-b border-[#f0f0f0] last:border-0 hover:bg-[#fafafa]">
+                    <td className="px-5 py-3">
+                      <Link href={`/admin/orders/${order.id}`} className="font-medium hover:underline">#{order.id}</Link>
+                    </td>
+                    <td className="px-5 py-3">{order.name}</td>
+                    <td className="px-5 py-3">{formatBDT(order.total)}</td>
+                    <td className="px-5 py-3"><StatusPill status={order.status} /></td>
+                    <td className="px-5 py-3 text-[#8a8a8a]">{new Date(order.createdAt).toLocaleDateString('en-BD', { dateStyle: 'medium' })}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

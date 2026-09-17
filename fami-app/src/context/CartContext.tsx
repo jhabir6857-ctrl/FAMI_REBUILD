@@ -13,12 +13,18 @@ interface CartContextValue {
   clearCart: () => void
   totalItems: number
   totalPrice: number
+  isDrawerOpen: boolean
+  setDrawerOpen: (open: boolean) => void
+  isStickyCartVisible: boolean
+  setStickyCartVisible: (visible: boolean) => void
 }
 
 const CartContext = createContext<CartContextValue | null>(null)
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [isDrawerOpen, setDrawerOpen] = useState(false)
+  const [isStickyCartVisible, setStickyCartVisible] = useState(false)
   const hydrated = useRef(false)
 
   // Load persisted cart once on mount (client-only — localStorage isn't
@@ -59,6 +65,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { ...item, quantity: Math.min(quantity, Math.max(item.stock, 1)) }]
     })
+    setDrawerOpen(true)
   }
 
   function removeItem(productId: number) {
@@ -81,7 +88,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalPrice = useMemo(() => items.reduce((sum, i) => sum + i.price * i.quantity, 0), [items])
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice, isDrawerOpen, setDrawerOpen, isStickyCartVisible, setStickyCartVisible }}>
       {children}
     </CartContext.Provider>
   )

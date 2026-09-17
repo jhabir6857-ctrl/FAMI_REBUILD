@@ -25,7 +25,7 @@ export interface Product {
   isFeatured: boolean
 }
 
-export type PaymentMethod = 'cod' | 'whatsapp' | 'bkash' | 'nagad'
+export type PaymentMethod = 'cod' | 'whatsapp' | 'bkash' | 'nagad' | 'sslcommerz'
 export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
 
 export interface OrderLineItem {

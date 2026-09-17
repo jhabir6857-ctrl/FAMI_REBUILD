@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { MessageCircle } from 'lucide-react'
-import { getProductBySlug, getRelatedProducts, getCategories, getStores } from '@/lib/data'
+import { getProductBySlug, getRelatedProducts, getCategories } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -10,6 +10,8 @@ import { ProductGallery } from '@/components/pdp/ProductGallery'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { Badge } from '@/components/ui/Badge'
 import { AddToCartButton } from '@/components/pdp/AddToCartButton'
+import { StickyAddToCart } from '@/components/pdp/StickyAddToCart'
+import { Accordion } from '@/components/ui/Accordion'
 import { formatBDT, discountPercent } from '@/lib/currency'
 import type { Metadata } from 'next'
 
@@ -29,10 +31,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params
-  const [product, categories, stores, session] = await Promise.all([
+  const [product, categories, session] = await Promise.all([
     getProductBySlug(slug),
     getCategories(),
-    getStores(),
     auth(),
   ])
 
@@ -103,15 +104,37 @@ export default async function ProductPage({ params }: Props) {
               )}
             </div>
 
-            {/* Description */}
-            <p className="font-ui text-sm text-[var(--color-text-muted)] leading-relaxed">
-              {product.description}
-            </p>
-
-            <hr className="divider-gold" />
+            {/* Details Accordion */}
+            <div className="mt-2">
+              <Accordion 
+                items={[
+                  {
+                    id: 'desc',
+                    title: 'Description',
+                    content: <p>{product.description}</p>
+                  },
+                  {
+                    id: 'shipping',
+                    title: 'Delivery & Returns',
+                    content: (
+                      <>
+                        <p><strong>Dhaka Delivery:</strong> Same-day delivery for orders placed before 2 PM. Free on orders over {formatBDT(5000)}.</p>
+                        <p><strong>Outside Dhaka:</strong> 2-3 business days via premium courier.</p>
+                        <p><strong>Returns:</strong> Complimentary returns within 7 days. Items must be unworn and in original packaging.</p>
+                      </>
+                    )
+                  },
+                  {
+                    id: 'care',
+                    title: 'Care Instructions',
+                    content: <p>To maintain the pristine condition of your FaMi piece, avoid direct contact with perfumes, lotions, and harsh chemicals. Store in the provided dust bag when not in use.</p>
+                  }
+                ]} 
+              />
+            </div>
 
             {/* Add to cart + WhatsApp — two CTAs side by side */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3" id="main-add-to-cart">
               <AddToCartButton product={product} />
               <a
                 href={whatsappUrl}
@@ -147,8 +170,9 @@ export default async function ProductPage({ params }: Props) {
           </section>
         )}
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn={isLoggedIn} />
+      <StickyAddToCart product={product} />
     </>
   )
 }

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getBlogPostBySlug, getCategories, getStores } from '@/lib/data'
+import { getBlogPostBySlug, getCategories } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
-  const [post, categories, stores, session] = await Promise.all([getBlogPostBySlug(slug), getCategories(), getStores(), auth()])
+  const [post, categories, session] = await Promise.all([getBlogPostBySlug(slug), getCategories(), auth()])
   if (!post) notFound()
   const isLoggedIn = Boolean(session?.user)
 
@@ -41,7 +41,7 @@ export default async function BlogPostPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn={isLoggedIn} />
     </>
   )

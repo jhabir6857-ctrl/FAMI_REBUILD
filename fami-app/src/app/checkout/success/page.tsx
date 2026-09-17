@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getCategories, getStores } from '@/lib/data'
+import { getCategories } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -8,9 +8,8 @@ import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 export const metadata = { title: 'Order placed' }
 
 export default async function CheckoutSuccessPage() {
-  const [categories, stores, session] = await Promise.all([
+  const [categories, session] = await Promise.all([
     getCategories(),
-    getStores(),
     auth(),
   ])
   const isLoggedIn = Boolean(session?.user)
@@ -39,8 +38,9 @@ export default async function CheckoutSuccessPage() {
           </div>
         </div>
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn={isLoggedIn} />
     </>
   )
 }
+

@@ -1,25 +1,24 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
-import { getUserById, getUserOrders, getCategories, getStores } from '@/lib/data'
+import { getUserById, getUserOrders, getCategories } from '@/lib/data'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { Badge } from '@/components/ui/Badge'
 import { SignOutButton } from '@/components/account/SignOutButton'
 import { formatBDT } from '@/lib/currency'
+import { EmptyState } from '@/components/ui/EmptyState'
 
 export default async function AccountPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
 
   const userId = Number(session.user.id)
-  const [user, orders, categories, stores] = await Promise.all([
+  const [user, orders, categories] = await Promise.all([
     getUserById(userId),
     getUserOrders(userId),
     getCategories(),
-    getStores(),
-  ])
+    ])
 
   if (!user) redirect('/login')
 
@@ -56,9 +55,8 @@ export default async function AccountPage() {
         {/* Order history */}
         <h2 className="font-display text-xl font-medium text-[var(--color-ink-plum)] mb-4">Order history</h2>
         {orders.length === 0 ? (
-          <div className="py-12 text-center border border-[var(--color-border-muted)] rounded-[var(--radius-md)]">
-            <p className="font-editorial text-lg text-[var(--color-text-muted)]">No orders yet</p>
-            <Link href="/shop" className="font-ui text-sm text-[var(--color-rose-gold)] hover:underline mt-2 inline-block">Shop the collection →</Link>
+          <div className="py-8">
+            <EmptyState type="orders" />
           </div>
         ) : (
           <div className="flex flex-col divide-y divide-[var(--color-border-muted)] border border-[var(--color-border-muted)] rounded-[var(--radius-md)]">
@@ -82,8 +80,9 @@ export default async function AccountPage() {
           </div>
         )}
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn />
     </>
   )
 }
+

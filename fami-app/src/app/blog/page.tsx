@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { getBlogPosts, getCategories, getStores } from '@/lib/data'
+import { getBlogPosts, getCategories } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = { title: 'Journal' }
 
 export default async function BlogPage() {
-  const [posts, categories, stores, session] = await Promise.all([getBlogPosts(), getCategories(), getStores(), auth()])
+  const [posts, categories, session] = await Promise.all([getBlogPosts(), getCategories(), auth()])
   const isLoggedIn = Boolean(session?.user)
 
   return (
@@ -39,8 +39,9 @@ export default async function BlogPage() {
           ))}
         </div>
       </main>
-      <Footer stores={stores} />
+      <Footer />
       <MobileBottomNav isLoggedIn={isLoggedIn} />
     </>
   )
 }
+

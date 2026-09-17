@@ -6,6 +6,7 @@ import { Trash2, Plus, Minus } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import { Button } from '@/components/ui/Button'
 import { formatBDT } from '@/lib/currency'
+import { EmptyState } from '@/components/ui/EmptyState'
 
 export function CartClient() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice } = useCart()
@@ -14,12 +15,10 @@ export function CartClient() {
 
   if (items.length === 0) {
     return (
-      <main className="container-fami py-20 text-center">
-        <h1 className="font-display text-3xl font-medium text-[var(--color-ink-plum)] mb-4">Your cart</h1>
-        <p className="font-ui text-base text-[var(--color-text-muted)] mb-8">Your cart is empty — add something beautiful.</p>
-        <Link href="/shop">
-          <Button variant="primary" size="md">Shop the collection</Button>
-        </Link>
+      <main className="container-fami py-10 md:py-20 flex justify-center">
+        <div className="w-full max-w-md">
+          <EmptyState type="cart" />
+        </div>
       </main>
     )
   }

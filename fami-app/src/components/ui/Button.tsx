@@ -41,7 +41,7 @@ export function Button({
     <button
       {...props}
       disabled={disabled ?? loading}
-      className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-ui font-medium transition-micro press-active disabled:cursor-not-allowed ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius-sm)] font-ui font-normal tracking-wider transition-all duration-300 press-active disabled:cursor-not-allowed ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
     >
       {loading && (
         <span

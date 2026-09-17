@@ -1,14 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
-import { Toast } from '@/components/ui/Toast'
 import { useCart } from '@/context/CartContext'
 import type { Product } from '@/types'
 
 export function AddToCartButton({ product }: { product: Product }) {
   const { addItem } = useCart()
-  const [showToast, setShowToast] = useState(false)
 
   function handleAdd() {
     if (product.stock === 0) return
@@ -16,11 +13,10 @@ export function AddToCartButton({ product }: { product: Product }) {
       productId: product.id,
       name: product.name,
       price: product.price,
-      imageUrl: product.imageUrls[0] ?? '',
+      imageUrl: product.imageUrls[0] ?? '/hero.jpg',
       slug: product.slug,
       stock: product.stock,
     })
-    setShowToast(true)
   }
 
   return (
@@ -34,13 +30,6 @@ export function AddToCartButton({ product }: { product: Product }) {
       >
         {product.stock === 0 ? 'Out of stock' : 'Add to cart'}
       </Button>
-      {showToast && (
-        <Toast
-          message={`${product.name} added to cart`}
-          type="success"
-          onDismiss={() => setShowToast(false)}
-        />
-      )}
     </>
   )
 }

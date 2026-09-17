@@ -21,7 +21,8 @@ export default async function AdminProductsPage() {
         {products.length === 0 ? (
           <p className="p-5 text-sm text-[#8a8a8a]">No products yet. <Link href="/admin/products/new" className="underline">Add one →</Link></p>
         ) : (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#e0e0e0] text-left text-xs uppercase tracking-wide text-[#8a8a8a]">
                 <th className="px-5 py-3 font-medium">Name</th>
@@ -62,6 +63,7 @@ export default async function AdminProductsPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>
