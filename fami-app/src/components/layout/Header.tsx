@@ -147,68 +147,69 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
         </div>
       )}
 
-      {/* Mobile drawer */}
-      {drawerOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <button aria-label="Close menu" className="absolute inset-0 bg-[var(--color-ink-plum)]/40 animate-fade-in" onClick={() => setDrawerOpen(false)} />
-          <div className="absolute inset-y-0 left-0 flex w-72 flex-col gap-1 bg-white p-6 animate-slide-in-left">
-            <div className="mb-4 flex items-center justify-between">
-              <Link 
-                href="/" 
-                onClick={() => {
-                  setDrawerOpen(false)
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
-                }}
-                className="flex items-center gap-2"
-              >
-                <Image src="/logo.jpg" alt="FaMi" width={32} height={32} className="object-contain rounded-full" />
-                <span className="font-display text-xl text-[var(--color-ink-plum)]">FaMi</span>
-              </Link>
-              <button onClick={() => setDrawerOpen(false)} aria-label="Close menu" className="touch-target flex items-center justify-center">
-                <X size={20} aria-hidden="true" />
-              </button>
-            </div>
-            <div className="flex flex-col gap-1 mt-4">
-              <button
-                onClick={() => setMobileCategoriesOpen(s => !s)}
-                className="font-ui flex w-full items-center justify-between py-3 text-left text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]"
-              >
-                Categories
-                <ChevronDown size={16} className={`transition-transform duration-300 ${mobileCategoriesOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
-              <div className={`flex flex-col gap-1 overflow-hidden transition-all duration-300 ${mobileCategoriesOpen ? 'max-h-[500px] opacity-100 mb-2' : 'max-h-0 opacity-0'}`}>
-                <Link
-                  href="/shop"
-                  onClick={() => setDrawerOpen(false)}
-                  className="font-ui py-2 pl-4 text-sm uppercase tracking-wider text-[var(--color-ink-plum)] font-medium transition-colors hover:text-[var(--color-rose-gold)]"
-                >
-                  All Products
-                </Link>
-                {categories.map(cat => (
-                  <Link
-                    key={cat.id}
-                    href={`/shop/${cat.slug}`}
-                    onClick={() => setDrawerOpen(false)}
-                    className="font-ui py-2 pl-4 text-sm uppercase tracking-wider text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-rose-gold)]"
-                  >
-                    {cat.name}
-                  </Link>
-                ))}
-              </div>
+    </header>
 
-              <hr className="divider-gold my-2" />
-              <Link href="/blog" onClick={() => setDrawerOpen(false)} className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]">
-                Journal
+    {/* Mobile drawer */}
+    {drawerOpen && (
+      <div className="fixed inset-0 z-50 md:hidden">
+        <button aria-label="Close menu" className="absolute inset-0 bg-[var(--color-ink-plum)]/40 animate-fade-in" onClick={() => setDrawerOpen(false)} />
+        <div className="absolute inset-y-0 left-0 flex w-72 flex-col gap-1 bg-white p-6 animate-slide-in-left shadow-2xl overflow-y-auto">
+          <div className="mb-4 flex items-center justify-between">
+            <Link 
+              href="/" 
+              onClick={() => {
+                setDrawerOpen(false)
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }}
+              className="flex items-center gap-2"
+            >
+              <Image src="/logo.jpg" alt="FaMi" width={32} height={32} className="object-contain rounded-full" />
+              <span className="font-display text-xl text-[var(--color-ink-plum)]">FaMi</span>
+            </Link>
+            <button onClick={() => setDrawerOpen(false)} aria-label="Close menu" className="touch-target flex items-center justify-center">
+              <X size={20} aria-hidden="true" />
+            </button>
+          </div>
+          <div className="flex flex-col gap-1 mt-4">
+            <button
+              onClick={() => setMobileCategoriesOpen(s => !s)}
+              className="font-ui flex w-full items-center justify-between py-3 text-left text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]"
+            >
+              Categories
+              <ChevronDown size={16} className={`transition-transform duration-300 ${mobileCategoriesOpen ? 'rotate-180' : ''}`} />
+            </button>
+            
+            <div className={`flex flex-col gap-1 overflow-hidden transition-all duration-300 ${mobileCategoriesOpen ? 'max-h-[500px] opacity-100 mb-2' : 'max-h-0 opacity-0'}`}>
+              <Link
+                href="/shop"
+                onClick={() => setDrawerOpen(false)}
+                className="font-ui py-2 pl-4 text-sm uppercase tracking-wider text-[var(--color-ink-plum)] font-medium transition-colors hover:text-[var(--color-rose-gold)]"
+              >
+                All Products
               </Link>
-              <Link href={isLoggedIn ? '/account' : '/login'} onClick={() => setDrawerOpen(false)} className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]">
-                {isLoggedIn ? 'My Account' : 'Sign In'}
-              </Link>
+              {categories.map(cat => (
+                <Link
+                  key={cat.id}
+                  href={`/shop/${cat.slug}`}
+                  onClick={() => setDrawerOpen(false)}
+                  className="font-ui py-2 pl-4 text-sm uppercase tracking-wider text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-rose-gold)]"
+                >
+                  {cat.name}
+                </Link>
+              ))}
             </div>
+
+            <hr className="divider-gold my-2" />
+            <Link href="/blog" onClick={() => setDrawerOpen(false)} className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]">
+              Journal
+            </Link>
+            <Link href={isLoggedIn ? '/account' : '/login'} onClick={() => setDrawerOpen(false)} className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]">
+              {isLoggedIn ? 'My Account' : 'Sign In'}
+            </Link>
           </div>
         </div>
-      )}
-    </header>
+      </div>
+    )}
     </>
   )
 }
