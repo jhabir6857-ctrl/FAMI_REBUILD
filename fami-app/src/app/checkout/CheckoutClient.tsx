@@ -11,8 +11,8 @@ import type { PaymentMethod } from '@/types'
 const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; hint: string; disabled?: boolean }[] = [
   { value: 'sslcommerz', label: 'Secure Online Payment (Coming Soon)', hint: 'Pay securely via Cards, Mobile Banking (bKash/Nagad), or Net Banking.', disabled: true },
   { value: 'cod', label: 'Cash on delivery', hint: 'Pay in cash when your order arrives.' },
-  { value: 'bkash', label: 'bKash', hint: 'We will send you a bKash payment request after confirming.' },
-  { value: 'nagad', label: 'Nagad', hint: 'We will send you a Nagad payment request after confirming.' },
+  { value: 'bkash', label: 'bKash (Coming Soon)', hint: 'We will send you a bKash payment request after confirming.', disabled: true },
+  { value: 'nagad', label: 'Nagad (Coming Soon)', hint: 'We will send you a Nagad payment request after confirming.', disabled: true },
   { value: 'whatsapp', label: 'WhatsApp confirmation', hint: 'Place the order here, then confirm payment via WhatsApp.' },
 ]
 

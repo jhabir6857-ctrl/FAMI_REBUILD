@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, Search, ShoppingBag, User, X } from 'lucide-react'
+import { Menu, Search, ShoppingBag, User, X, ChevronDown } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import type { Category } from '@/types'
 
@@ -11,6 +11,7 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
   const { totalItems, setDrawerOpen: setCartDrawerOpen } = useCart()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [isVisible, setIsVisible] = useState(true)
 
@@ -168,17 +169,35 @@ export function Header({ categories, isLoggedIn }: { categories: Category[]; isL
               </button>
             </div>
             <div className="flex flex-col gap-1 mt-4">
-              {categories.map(cat => (
+              <button
+                onClick={() => setMobileCategoriesOpen(s => !s)}
+                className="font-ui flex w-full items-center justify-between py-3 text-left text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]"
+              >
+                Categories
+                <ChevronDown size={16} className={`transition-transform duration-300 ${mobileCategoriesOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              <div className={`flex flex-col gap-1 overflow-hidden transition-all duration-300 ${mobileCategoriesOpen ? 'max-h-[500px] opacity-100 mb-2' : 'max-h-0 opacity-0'}`}>
                 <Link
-                  key={cat.id}
-                  href={`/shop/${cat.slug}`}
+                  href="/shop"
                   onClick={() => setDrawerOpen(false)}
-                  className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]"
+                  className="font-ui py-2 pl-4 text-sm uppercase tracking-wider text-[var(--color-ink-plum)] font-medium transition-colors hover:text-[var(--color-rose-gold)]"
                 >
-                  {cat.name}
+                  All Products
                 </Link>
-              ))}
-              <hr className="divider-gold my-4" />
+                {categories.map(cat => (
+                  <Link
+                    key={cat.id}
+                    href={`/shop/${cat.slug}`}
+                    onClick={() => setDrawerOpen(false)}
+                    className="font-ui py-2 pl-4 text-sm uppercase tracking-wider text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-rose-gold)]"
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
+              </div>
+
+              <hr className="divider-gold my-2" />
               <Link href="/blog" onClick={() => setDrawerOpen(false)} className="font-ui py-3 text-sm font-medium uppercase tracking-widest text-[var(--color-ink-plum)] transition-colors hover:text-[var(--color-rose-gold)]">
                 Journal
               </Link>
