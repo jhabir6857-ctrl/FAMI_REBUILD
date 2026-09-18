@@ -44,8 +44,11 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <Link href={`/products/${product.slug}`} className="group flex flex-col gap-2">
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--color-parchment-100)]">
+    <Link href={`/products/${product.slug}`} className="group flex flex-col gap-2 scroll-reveal">
+      <div 
+        className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--color-parchment-100)]"
+        style={{ viewTransitionName: `product-${product.slug}` }}
+      >
         {/* Use a fallback image if database is missing image URLs */}
         <Image
           src={product.imageUrls[0] || '/hero.jpg'}

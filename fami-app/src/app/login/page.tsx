@@ -47,32 +47,41 @@ function LoginForm() {
 
   return (
     <main className="min-h-screen flex flex-col md:flex-row">
-      {/* ── Left panel — dark plum with logo ── */}
-      <div className="relative flex flex-col items-center justify-center gap-6 bg-[var(--color-ink-plum)] px-8 py-14 md:w-1/2 md:py-0">
+      {/* ── Left panel — lifestyle image & typography ── */}
+      <div className="relative flex flex-col justify-between overflow-hidden bg-[var(--color-ink-plum)] px-8 py-14 md:w-1/2 md:p-16">
+        
         {/* Subtle radial glow */}
         <div
           className="pointer-events-none absolute inset-0 opacity-20"
           style={{ background: 'radial-gradient(ellipse at 50% 40%, #b76e79 0%, transparent 70%)' }}
           aria-hidden="true"
         />
-        <div className="relative z-10 flex flex-col items-center gap-5 text-center">
-          {/* Logo medallion — white seal on dark plum */}
-          <Link href="/" aria-label="Return to homepage" className="w-24 h-24 rounded-full bg-white/95 flex items-center justify-center shadow-2xl ring-1 ring-white/20 animate-scale-in hover:scale-105 transition-transform duration-300">
-            <Image
-              src="/logo.jpg"
-              alt="FaMi monogram"
-              width={72}
-              height={72}
-              className="object-contain rounded-full"
-              priority
-            />
+
+        {/* Center: Massive Logo */}
+        <div className="absolute inset-0 flex items-center justify-center z-10 animate-scale-in">
+          <Link href="/" aria-label="Return to homepage" className="inline-block hover:scale-105 transition-transform duration-500">
+            <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-white flex items-center justify-center shadow-2xl ring-1 ring-white/10 overflow-hidden">
+              <Image
+                src="/logo.jpg"
+                alt="FaMi monogram"
+                width={160}
+                height={160}
+                className="object-contain rounded-full"
+                priority
+              />
+            </div>
           </Link>
-          <div className="animate-fade-in-up delay-150">
-            <p className="font-display text-3xl font-medium text-white tracking-wide">FaMi</p>
-            <p className="font-ui text-sm text-[var(--color-rose-gold-light)] tracking-widest uppercase mt-1">
-              Curated for the discerning shopper
-            </p>
-          </div>
+        </div>
+
+        {/* Bottom: Massive Typography */}
+        <div className="relative z-10 mt-auto animate-fade-in-up delay-150">
+          <h2 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.95] text-white tracking-tight mb-4">
+            Curated for the<br />
+            <em className="font-light italic text-[var(--color-rose-gold)]">discerning.</em>
+          </h2>
+          <p className="font-ui text-sm text-[var(--color-parchment)]/70 uppercase tracking-widest max-w-sm">
+            Enter the standard to access exclusive collections and private events.
+          </p>
         </div>
       </div>
 

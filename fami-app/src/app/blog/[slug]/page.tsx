@@ -6,6 +6,7 @@ import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
+import DOMPurify from 'isomorphic-dompurify'
 import type { Metadata } from 'next'
 
 interface Props { params: Promise<{ slug: string }> }
@@ -38,7 +39,7 @@ export default async function BlogPostPage({ params }: Props) {
         )}
         <div
           className="font-ui text-base text-[var(--color-ink-plum)] leading-relaxed prose-p:mb-4"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
       </main>
       <Footer />

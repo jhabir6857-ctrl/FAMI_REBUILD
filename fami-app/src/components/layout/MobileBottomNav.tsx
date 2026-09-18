@@ -49,7 +49,7 @@ export function MobileBottomNav({ isLoggedIn }: { isLoggedIn: boolean }) {
   return (
     <nav
       aria-label="Primary"
-      className={`fixed inset-x-0 bottom-0 z-40 flex border-t border-[var(--color-border-muted)] bg-white pb-[env(safe-area-inset-bottom)] md:hidden transform transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${translateY}`}
+      className={`fixed inset-x-0 bottom-0 z-40 flex border-t border-[var(--color-border-muted)] glass-panel pb-[env(safe-area-inset-bottom)] md:hidden transform transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${translateY}`}
     >
       {items.map(({ href, label, icon: Icon, isExternal }) => {
         const active = pathname === href || (href !== '/' && !isExternal && pathname.startsWith(href))

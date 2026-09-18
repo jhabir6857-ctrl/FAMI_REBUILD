@@ -39,7 +39,7 @@ export function CartDrawer() {
       
       {/* Drawer */}
       <div 
-        className="relative w-full max-w-md bg-[var(--color-parchment)] h-full shadow-2xl flex flex-col animate-slide-in-right"
+        className="relative w-full max-w-md glass-panel h-full shadow-2xl flex flex-col animate-slide-in-right"
         // Use our new slide-in-right that takes 400ms with cubic-bezier
       >
         <div className="flex items-center justify-between p-6 border-b border-[#2b1f2e]/5">
@@ -125,7 +125,7 @@ export function CartDrawer() {
         </div>
 
         {items.length > 0 && (
-          <div className="border-t border-[#2b1f2e]/5 p-6 bg-white">
+          <div className="border-t border-[#2b1f2e]/5 p-6 bg-transparent">
             <div className="flex justify-between items-end mb-6">
               <span className="font-ui text-sm text-[var(--color-text-muted)]">Subtotal</span>
               <span className="font-ui text-xl font-medium text-[var(--color-ink-plum)]">{formatBDT(totalPrice)}</span>

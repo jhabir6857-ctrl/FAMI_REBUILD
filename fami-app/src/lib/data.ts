@@ -89,6 +89,15 @@ export async function getCategoryBySlug(slug: string): Promise<Category | undefi
   return row ? toCategory(row) : undefined
 }
 
+export async function getCategoryById(id: number): Promise<Category | undefined> {
+  const [row] = await db.select().from(categories).where(eq(categories.id, id))
+  return row ? toCategory(row) : undefined
+}
+
+export async function updateCategory(id: number, data: Partial<{ name: string; description: string; imageUrl: string }>): Promise<void> {
+  await db.update(categories).set(data).where(eq(categories.id, id))
+}
+
 // ── Products ────────────────────────────────────────────────────────────
 
 interface GetProductsOptions {
@@ -96,6 +105,7 @@ interface GetProductsOptions {
   isNew?: boolean
   categorySlug?: string
   limit?: number
+  page?: number
   sort?: string
   inStock?: boolean
 }
@@ -129,7 +139,10 @@ export async function getProducts(opts: GetProductsOptions = {}): Promise<Produc
       desc(products.createdAt)
     )
 
-  const rows = opts.limit ? await query.limit(opts.limit) : await query
+  if (opts.limit) query.limit(opts.limit)
+  if (opts.page && opts.limit) query.offset((opts.page - 1) * opts.limit)
+  
+  const rows = await query
   return rows.map(r => toProduct(r.product, r.category))
 }
 

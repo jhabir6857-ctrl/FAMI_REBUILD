@@ -42,6 +42,7 @@ export function ProductGallery({ product }: { product: Product }) {
     <div className="flex flex-col gap-3">
       <div 
         className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--color-parchment-100)] group cursor-crosshair"
+        style={{ viewTransitionName: `product-${product.slug}` }}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsZoomed(true)}
         onMouseLeave={() => {

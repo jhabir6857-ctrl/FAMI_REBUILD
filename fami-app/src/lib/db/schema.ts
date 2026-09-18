@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, boolean, timestamp } from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, integer, boolean, timestamp, index, bigint } from 'drizzle-orm/pg-core'
 import { relations, sql } from 'drizzle-orm'
 
 // ── Categories ────────────────────────────────────────────────────────────
@@ -26,7 +26,11 @@ export const products = pgTable('products', {
   isNew: boolean('is_new').notNull().default(false),
   isFeatured: boolean('is_featured').notNull().default(false),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-})
+}, (t) => ({
+  categoryIdIdx: index('product_category_idx').on(t.categoryId),
+  createdIdx: index('product_created_idx').on(t.createdAt),
+  featuredIdx: index('product_featured_idx').on(t.isFeatured),
+}))
 
 export const productsRelations = relations(products, ({ one }) => ({
   category: one(categories, { fields: [products.categoryId], references: [categories.id] }),
@@ -64,7 +68,11 @@ export const orders = pgTable('orders', {
   notes: text('notes'),
   tranId: text('tran_id'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-})
+}, (t) => ({
+  userIdIdx: index('order_user_idx').on(t.userId),
+  statusIdx: index('order_status_idx').on(t.status),
+  createdIdx: index('order_created_idx').on(t.createdAt),
+}))
 
 export const orderItems = pgTable('order_items', {
   id: serial('id').primaryKey(),
@@ -74,7 +82,10 @@ export const orderItems = pgTable('order_items', {
   productImage: text('product_image').notNull().default(''),
   price: integer('price').notNull(),
   quantity: integer('quantity').notNull(),
-})
+}, (t) => ({
+  orderIdx: index('order_item_order_idx').on(t.orderId),
+  productIdx: index('order_item_product_idx').on(t.productId),
+}))
 
 export const ordersRelations = relations(orders, ({ many }) => ({
   items: many(orderItems),
@@ -116,7 +127,7 @@ export const stores = pgTable('stores', {
 export const rateLimits = pgTable('rate_limits', {
   id: serial('id').primaryKey(),
   key: text('key').notNull(),
-  timestamp: integer('timestamp').notNull(),
+  timestamp: bigint('timestamp', { mode: 'number' }).notNull(),
 })
 
 // ———————————————— Settings ————————————————

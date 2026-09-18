@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
 
     // Fire-and-forget — a failed email must never fail the order.
     // lineItems come from the already-completed transaction, no extra DB hit.
-    void sendOrderNotification({
+    sendOrderNotification({
       orderId: result.orderId,
       customerName: name,
       customerEmail: email,
@@ -150,6 +150,8 @@ export async function POST(req: NextRequest) {
         quantity: li.quantity,
         price: li.price,
       })),
+    }).catch(emailErr => {
+      console.error('Failed to trigger order notification email:', emailErr)
     })
 
     return NextResponse.json({ success: true, orderId: result.orderId, total: result.total, pointsEarned: result.pointsEarned })

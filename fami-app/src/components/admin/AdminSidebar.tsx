@@ -20,6 +20,7 @@ export function AdminSidebar() {
     { href: '/admin', label: 'Dashboard' },
     { href: '/admin/orders', label: 'Orders' },
     { href: '/admin/products', label: 'Products' },
+    { href: '/admin/categories', label: 'Categories' },
     { href: '/admin/blog', label: 'Blog' },
     { href: '/admin/stores', label: 'Stores' },
     { href: '/admin/settings', label: 'Settings' },

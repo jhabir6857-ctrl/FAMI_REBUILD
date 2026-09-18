@@ -116,6 +116,53 @@
     }
   }
 
+  /* Fluid typography utilities (scaling dynamically from mobile to desktop) */
+  .text-fluid-display {
+    font-size: clamp(28px, 4vw + 1rem, 40px);
+    line-height: 1.15;
+  }
+  .text-fluid-h2 {
+    font-size: clamp(22px, 3vw + 0.5rem, 28px);
+    line-height: 1.2;
+  }
+  .text-fluid-hero {
+    font-size: clamp(3rem, 8vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+  .hairline-divider {
+    border: none;
+    border-top: 1px solid rgba(234, 227, 231, 0.2); /* var(--color-border-muted) with 20% opacity */
+  }
+
+  /* Liquid Glass overlay utility */
+  .glass-panel {
+    background: rgba(250, 246, 240, 0.7); /* Parchment with opacity */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .glass-panel-dark {
+    background: rgba(43, 31, 46, 0.6); /* Ink Plum with opacity */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Performance utilities */
+  .content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 1000px; /* Fallback placeholder size */
+  }
+
+  /* Scroll-driven animation (fade in on scroll) */
+  @supports (animation-timeline: view()) {
+    .scroll-reveal {
+      animation: fami-fade-in-up linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 25%;
+    }
+  }
+
   /* §3: 96px vertical rhythm between major sections on desktop, 64px mobile. */
   .section-gap {
     padding-block: 64px;

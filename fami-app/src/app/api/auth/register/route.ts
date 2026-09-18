@@ -60,13 +60,17 @@ export async function POST(req: NextRequest) {
     try {
       await db.insert(users).values({ name, email, passwordHash, referralCode, role })
       
-      // Fire and forget welcome email
-      const html = await render(WelcomeEmail({ name, referralCode }))
-      sendEmail({
-        to: email,
-        subject: 'Welcome to FaMi',
-        html,
-      })
+      // Fire and forget welcome email (swallow errors so registration still succeeds)
+      try {
+        const html = await render(WelcomeEmail({ name, referralCode }))
+        sendEmail({
+          to: email,
+          subject: 'Welcome to FaMi',
+          html,
+        })
+      } catch (emailErr) {
+        console.error('Failed to render or send welcome email:', emailErr)
+      }
 
       return NextResponse.json({ success: true })
     } catch (err) {
