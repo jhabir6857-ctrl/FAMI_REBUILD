@@ -44,7 +44,7 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <Link href={`/products/${product.slug}`} className="group flex flex-col gap-2 scroll-reveal">
+    <Link href={`/products/${product.slug}`} className="group/card flex flex-col gap-2 scroll-reveal">
       <div 
         className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--color-parchment-100)]"
         style={{ viewTransitionName: `product-${product.slug}` }}
@@ -55,7 +55,7 @@ export function ProductCard({ product }: { product: Product }) {
           alt={product.name}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover animate-fade-in transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          className="object-cover animate-fade-in transition-transform duration-700 ease-out group-hover/card:scale-[1.03]"
         />
 
         {/* Wishlist heart — always visible on mobile (no hover state on touch) */}
@@ -77,7 +77,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-col gap-1 mt-1">
         <p className="font-ui text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">{product.categoryName}</p>
-        <h3 className="font-editorial text-lg font-normal leading-snug text-[var(--color-ink-plum)] group-hover:text-[var(--color-rose-gold)] transition-all duration-300">
+        <h3 className="font-editorial text-lg font-normal leading-snug text-[var(--color-ink-plum)] group-hover/card:text-[var(--color-rose-gold)] transition-all duration-300">
           {product.name}
         </h3>
         <div className="flex items-baseline gap-2">

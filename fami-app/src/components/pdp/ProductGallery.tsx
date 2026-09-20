@@ -70,7 +70,7 @@ export function ProductGallery({ product }: { product: Product }) {
             className="object-cover transition-transform duration-400 ease-out" 
             style={{
               transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
-              transform: isZoomed ? 'scale(2.5)' : 'scale(1)'
+              transform: isZoomed ? 'scale(1.5)' : 'scale(1)'
             }}
             priority 
           />

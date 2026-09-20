@@ -35,7 +35,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-[var(--color-ink-plum)] text-[var(--color-parchment-100)] pt-24 pb-8 overflow-hidden">
+    <footer className="bg-[var(--color-ink-plum)] text-[var(--color-parchment-100)] pt-24 pb-28 md:pb-8 overflow-hidden">
       <div className="container-fami flex flex-col items-center text-center">
         {/* Massive Typography Newsletter Hook */}
         <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] leading-[0.9] tracking-tight mb-8">

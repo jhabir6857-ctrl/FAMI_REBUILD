@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getCategories } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
@@ -50,15 +51,17 @@ export default async function AboutPage() {
               We curate, not just source. That means every single piece of jewelry, every bag, and every dress is worn, tested, and reviewed before it ever reaches our store.
             </p>
           </div>
-          {/* Monogram display */}
+          {/* Monogram / Logo display */}
           <div
-            className="flex items-center justify-center w-full aspect-square max-w-xs mx-auto rounded-[var(--radius-md)] bg-[var(--color-parchment-100)] border border-[var(--color-border-muted)]"
+            className="flex items-center justify-center w-full aspect-square max-w-xs mx-auto rounded-[var(--radius-md)] bg-white border border-[var(--color-border-muted)] overflow-hidden relative"
             aria-hidden="true"
           >
-            <div className="text-center">
-              <p className="font-display text-8xl font-medium text-[var(--color-rose-gold)] leading-none">FM</p>
-              <p className="font-ui text-xs text-[var(--color-text-muted)] tracking-widest uppercase mt-3">FaMi</p>
-            </div>
+            <Image
+              src="/logo.jpg"
+              alt="FaMi Logo"
+              fill
+              className="object-contain p-8 hover:scale-105 transition-transform duration-500"
+            />
           </div>
         </section>
 
@@ -68,7 +71,7 @@ export default async function AboutPage() {
         <section className="container-fami py-14 md:py-20">
           <span className="hallmark-stamp mb-6 inline-block text-[var(--color-ink-plum)]/70">What we stand for</span>
           <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--color-ink-plum)] mb-10">Our Promise To You</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0 sm:divide-x sm:divide-[var(--color-border-muted)]">
             {[
               {
                 title: 'Never replace it again',
@@ -82,8 +85,8 @@ export default async function AboutPage() {
                 title: 'Zero-hassle shopping',
                 body: 'Fast delivery, responsive WhatsApp support, and seamless checkout. We respect your time and money.',
               },
-            ].map(value => (
-              <div key={value.title} className="flex flex-col gap-3">
+            ].map((value, i) => (
+              <div key={value.title} className={`flex flex-col gap-3 ${i !== 0 ? 'sm:pl-8' : ''} ${i !== 2 ? 'sm:pr-8' : ''}`}>
                 <div className="w-10 h-px bg-[var(--color-rose-gold)]" aria-hidden="true" />
                 <h3 className="font-display text-xl font-medium text-[var(--color-ink-plum)]">{value.title}</h3>
                 <p className="font-ui text-sm text-[var(--color-text-muted)] leading-relaxed">{value.body}</p>
