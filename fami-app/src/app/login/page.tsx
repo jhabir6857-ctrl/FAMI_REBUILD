@@ -58,7 +58,7 @@ function LoginForm() {
         />
 
         {/* Center: Massive Logo */}
-        <div className="absolute inset-0 flex items-center justify-center z-10 animate-scale-in">
+        <div className="relative z-10 flex items-center justify-center animate-scale-in mb-12 md:absolute md:inset-0 md:mb-0 md:z-10">
           <Link href="/" aria-label="Return to homepage" className="inline-block hover:scale-105 transition-transform duration-500">
             <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-white flex items-center justify-center shadow-2xl ring-1 ring-white/10 overflow-hidden">
               <Image
