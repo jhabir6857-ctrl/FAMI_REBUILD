@@ -1,6 +1,6 @@
 import { and, desc, eq, like, ne, or, sql } from 'drizzle-orm'
 import { db } from '@/lib/db'
-import { blogPosts, categories, orderItems, orders, products, stores, users, wishlist } from '@/lib/db/schema'
+import { blogPosts, categories, orderItems, orders, products, stores, users, wishlist, settings } from '@/lib/db/schema'
 import type { BlogPost, Category, DashboardStats, Order, OrderStatus, Product, Store, UserProfile, WishlistItem } from '@/types'
 
 // ── Internal row -> app-type mappers ───────────────────────────────────────
@@ -500,3 +500,9 @@ export async function updateStore(id: number, data: Partial<{ name: string; addr
 export async function deleteStore(id: number): Promise<void> {
   await db.delete(stores).where(eq(stores.id, id))
 }
+
+export async function getStoreSettings(): Promise<{ deliveryChargeInside: number; deliveryChargeOutside: number; freeShippingThreshold: number }> {
+  const [row] = await db.select().from(settings).limit(1)
+  return row || { deliveryChargeInside: 80, deliveryChargeOutside: 150, freeShippingThreshold: 5000 }
+}
+

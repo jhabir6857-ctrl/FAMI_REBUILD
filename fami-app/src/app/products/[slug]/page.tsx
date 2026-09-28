@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { MessageCircle } from 'lucide-react'
-import { getProductBySlug, getRelatedProducts, getCategories } from '@/lib/data'
+import { getProductBySlug, getRelatedProducts, getCategories, getStoreSettings } from '@/lib/data'
 import { auth } from '@/lib/auth'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -31,10 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params
-  const [product, categories, session] = await Promise.all([
+  const [product, categories, session, storeSettings] = await Promise.all([
     getProductBySlug(slug),
     getCategories(),
     auth(),
+    getStoreSettings(),
   ])
 
   if (!product) notFound()
@@ -118,7 +119,7 @@ export default async function ProductPage({ params }: Props) {
                     title: 'Delivery & Returns',
                     content: (
                       <>
-                        <p><strong>Dhaka Delivery:</strong> Same-day delivery for orders placed before 2 PM. Free on orders over {formatBDT(5000)}.</p>
+                        <p><strong>Dhaka Delivery:</strong> Same-day delivery for orders placed before 2 PM. Free on orders over {formatBDT(storeSettings.freeShippingThreshold)}.</p>
                         <p><strong>Outside Dhaka:</strong> 2-3 business days via premium courier.</p>
                         <p><strong>Returns:</strong> Complimentary returns within 7 days. Items must be unworn and in original packaging.</p>
                       </>
