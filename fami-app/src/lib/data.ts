@@ -108,6 +108,24 @@ export async function updateCategory(id: number, data: Partial<{ name: string; d
   await db.update(categories).set(data).where(eq(categories.id, id))
 }
 
+export async function createCategory(data: { name: string; slug: string; description?: string; imageUrl?: string; sortOrder?: number }): Promise<number> {
+  const rows = await db.insert(categories).values({
+    name: data.name,
+    slug: data.slug,
+    description: data.description ?? '',
+    imageUrl: data.imageUrl ?? null,
+    sortOrder: data.sortOrder ?? 0,
+  }).returning({ id: categories.id })
+  
+  const row = rows[0]
+  if (!row) throw new Error('Failed to create category')
+  return row.id
+}
+
+export async function deleteCategory(id: number): Promise<void> {
+  await db.delete(categories).where(eq(categories.id, id))
+}
+
 // ── Products ────────────────────────────────────────────────────────────
 
 interface GetProductsOptions {

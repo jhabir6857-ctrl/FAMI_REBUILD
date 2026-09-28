@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { getCategories } from '@/lib/data'
+import { DeleteCategoryButton } from '@/components/admin/DeleteCategoryButton'
 
 export const metadata = { title: 'Categories · Admin' }
 
@@ -11,6 +12,12 @@ export default async function AdminCategoriesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-medium">Categories</h1>
+        <Link 
+          href="/admin/categories/new" 
+          className="rounded bg-[#1a1a1a] px-4 py-2 text-sm font-medium text-white hover:bg-[#333] transition-colors"
+        >
+          Add new category
+        </Link>
       </div>
 
       <div className="rounded border border-[#e0e0e0] bg-white">
@@ -45,6 +52,7 @@ export default async function AdminCategoriesPage() {
                       <Link href={`/admin/categories/${cat.id}/edit`} className="rounded bg-[#1a1a1a] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#333]">
                         Edit Image
                       </Link>
+                      <DeleteCategoryButton id={cat.id} />
                     </td>
                   </tr>
                 ))}
@@ -56,3 +64,4 @@ export default async function AdminCategoriesPage() {
     </div>
   )
 }
+

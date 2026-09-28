@@ -51,3 +51,33 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ id: str
     return NextResponse.json({ error: 'Failed to update category' }, { status: 500 })
   }
 }
+
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const session = await auth()
+  if (session?.user?.role !== 'admin') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { id } = await props.params
+  const catId = parseInt(id, 10)
+  if (isNaN(catId)) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+
+  try {
+    const { deleteCategory } = await import('@/lib/data')
+    await deleteCategory(catId)
+    return NextResponse.json({ success: true })
+  } catch (err: unknown) {
+    console.error('Delete category error:', err)
+    const msg = err instanceof Error ? err.message : ''
+    
+    // Check for foreign key constraint violation (Drizzle/Postgres)
+    if (msg.includes('foreign key constraint') || msg.includes('violates foreign key constraint') || msg.includes('update or delete on table "categories" violates foreign key constraint')) {
+      return NextResponse.json({ 
+        error: 'Cannot delete this category because it has products attached. Please move or delete the products first.' 
+      }, { status: 400 })
+    }
+    
+    return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 })
+  }
+}
+
