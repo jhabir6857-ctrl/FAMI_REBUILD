@@ -45,11 +45,30 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
   await updateOrderStatus(orderId, parsed.data.status)
   
-  if (parsed.data.status === 'confirmed' || parsed.data.status === 'delivered') {
+  if (['confirmed', 'shipped', 'delivered', 'cancelled'].includes(parsed.data.status)) {
     const { sendCustomerOrderReceipt } = await import('@/lib/email')
-    const statusMsg = parsed.data.status === 'confirmed' 
-      ? 'Great news! Your order has been confirmed and is being prepared for shipment.'
-      : 'Your order has been delivered! We hope you enjoy your new items.'
+    
+    let statusMsg = ''
+    let subject = ''
+    
+    switch (parsed.data.status) {
+      case 'confirmed':
+        statusMsg = 'Great news! Your order has been confirmed and is being prepared for shipment.'
+        subject = `FaMi Order #${existing.id} Confirmed`
+        break
+      case 'shipped':
+        statusMsg = 'Your order is on the way! It has been dispatched and will arrive soon.'
+        subject = `FaMi Order #${existing.id} Shipped`
+        break
+      case 'delivered':
+        statusMsg = 'Your order has been delivered! We hope you love your new purchase.'
+        subject = `FaMi Order #${existing.id} Delivered`
+        break
+      case 'cancelled':
+        statusMsg = 'Your order has been cancelled / rejected. If you have questions or believe this was done in error, please reply to this email.'
+        subject = `FaMi Order #${existing.id} Cancelled`
+        break
+    }
     
     // Fire and forget
     sendCustomerOrderReceipt({
@@ -61,6 +80,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       total: existing.total,
       shippingAddress: existing.shippingAddress,
       statusMessage: statusMsg,
+      subject,
     }).catch(console.error)
   }
 
