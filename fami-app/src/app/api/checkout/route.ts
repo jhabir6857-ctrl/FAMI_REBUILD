@@ -13,7 +13,7 @@ const checkoutSchema = z.object({
   phone: z.string().min(10),
   address: z.string().min(5),
   city: z.string().min(2),
-  paymentMethod: z.enum(['cod', 'whatsapp', 'bkash', 'nagad']),
+  paymentMethod: z.enum(['cod', 'whatsapp', 'bkash', 'nagad', 'sslcommerz']),
   deliveryZone: z.enum(['inside', 'outside']),
   notes: z.string().optional(),
   items: z.array(z.object({
@@ -46,53 +46,51 @@ export async function POST(req: NextRequest) {
   const shippingAddress = `${address}, ${city} (${deliveryZone === 'inside' ? 'Inside Dhaka' : 'Outside Dhaka'})`
 
   try {
-    // Everything below happens atomically: if stock runs out mid-transaction,
-    // a concurrent order fails cleanly with SQLite's default IMMEDIATE lock
-    // rather than both orders decrementing stock past zero.
-    const result = await db.transaction(async (tx) => {
-      const productIds = items.map(i => i.productId)
-      const dbProducts = await tx.select().from(products).where(inArray(products.id, productIds))
-      const productMap = new Map(dbProducts.map(p => [p.id, p]))
+    const productIds = items.map(i => i.productId)
+    const dbProducts = await db.select().from(products).where(inArray(products.id, productIds))
+    const productMap = new Map(dbProducts.map(p => [p.id, p]))
 
-      let subtotal = 0
-      const lineItems: { product: typeof dbProducts[number]; quantity: number; price: number }[] = []
-      for (const item of items) {
-        const product = productMap.get(item.productId)
-        if (!product) throw new CheckoutError(`Product ${item.productId} not found`, 400)
-        if (product.stock < item.quantity) {
-          throw new CheckoutError(`Insufficient stock for ${product.name}`, 409)
-        }
-        const lineTotal = product.price * item.quantity
-        subtotal += lineTotal
-        lineItems.push({ product, quantity: item.quantity, price: product.price })
+    let subtotal = 0
+    const lineItems: { product: typeof dbProducts[number]; quantity: number; price: number }[] = []
+    for (const item of items) {
+      const product = productMap.get(item.productId)
+      if (!product) throw new CheckoutError(`Product ${item.productId} not found`, 400)
+      if (product.stock < item.quantity) {
+        throw new CheckoutError(`Insufficient stock for ${product.name}`, 409)
       }
+      const lineTotal = product.price * item.quantity
+      subtotal += lineTotal
+      lineItems.push({ product, quantity: item.quantity, price: product.price })
+    }
 
-      let [currentSettings] = await tx.select().from(settings).limit(1)
-      if (!currentSettings) {
-        currentSettings = { deliveryChargeInside: 80, deliveryChargeOutside: 150, freeShippingThreshold: 5000, id: 1, updatedAt: new Date() }
-      }
+    let [currentSettings] = await db.select().from(settings).limit(1)
+    if (!currentSettings) {
+      currentSettings = { deliveryChargeInside: 80, deliveryChargeOutside: 150, freeShippingThreshold: 5000, id: 1, updatedAt: new Date() }
+    }
 
-      const baseShipping = deliveryZone === 'inside' ? currentSettings.deliveryChargeInside : currentSettings.deliveryChargeOutside
-      const shipping = subtotal >= currentSettings.freeShippingThreshold ? 0 : baseShipping
-      const total = subtotal + shipping
-      const pointsEarned = Math.floor(total / 100) // 1 point per ৳100
+    const baseShipping = deliveryZone === 'inside' ? currentSettings.deliveryChargeInside : currentSettings.deliveryChargeOutside
+    const shipping = subtotal >= currentSettings.freeShippingThreshold ? 0 : baseShipping
+    const total = subtotal + shipping
+    const pointsEarned = Math.floor(total / 100) // 1 point per ৳100
 
-      const [order] = await tx.insert(orders).values({
-        userId,
-        paymentMethod,
-        subtotal,
-        total,
-        shippingAddress,
-        phone,
-        email,
-        name,
-        notes: notes ?? null,
-        pointsEarned,
-      }).returning()
+    const orderRows = await db.insert(orders).values({
+      userId,
+      paymentMethod,
+      subtotal,
+      total,
+      shippingAddress,
+      phone,
+      email,
+      name,
+      notes: notes ?? null,
+      pointsEarned,
+    }).returning()
 
-      if (!order) throw new CheckoutError('Failed to create order', 500)
+    const order = orderRows[0]
+    if (!order) throw new CheckoutError('Failed to create order', 500)
 
-      await tx.insert(orderItems).values(
+    try {
+      await db.insert(orderItems).values(
         lineItems.map(({ product, quantity, price }) => {
           let firstImage = ''
           try {
@@ -112,27 +110,30 @@ export async function POST(req: NextRequest) {
         })
       )
 
-      // Conditional decrement (not "current stock minus quantity") so a
-      // concurrent transaction can't push stock negative — this row-level
-      // WHERE re-checks stock at write time, not just at read time above.
+      // Conditional decrement: row-level WHERE stock >= quantity
       for (const { product, quantity } of lineItems) {
-        const updated = await tx
+        const updated = await db
           .update(products)
           .set({ stock: sql`${products.stock} - ${quantity}` })
           .where(sql`${products.id} = ${product.id} AND ${products.stock} >= ${quantity}`)
-        if (updated.rowCount === 0) {
+          .returning({ id: products.id })
+        if (updated.length === 0) {
           throw new CheckoutError(`Insufficient stock for ${product.name}`, 409)
         }
       }
 
       if (userId && pointsEarned > 0) {
-        await tx.update(users)
+        await db.update(users)
           .set({ loyaltyPoints: sql`${users.loyaltyPoints} + ${pointsEarned}` })
           .where(eq(users.id, userId))
       }
+    } catch (orderStepErr) {
+      // Roll back the order if items or stock decrement failed
+      await db.delete(orders).where(eq(orders.id, order.id)).catch(() => {})
+      throw orderStepErr
+    }
 
-      return { orderId: order.id, total, subtotal, pointsEarned, lineItems }
-    })
+    const result = { orderId: order.id, total, subtotal, pointsEarned, lineItems }
 
     // Fire-and-forget — a failed email must never fail the order.
     // lineItems come from the already-completed transaction, no extra DB hit.
