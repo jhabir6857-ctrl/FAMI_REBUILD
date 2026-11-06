@@ -135,25 +135,28 @@ export async function POST(req: NextRequest) {
 
     const result = { orderId: order.id, total, subtotal, pointsEarned, lineItems }
 
-    // Fire-and-forget — a failed email must never fail the order.
-    // lineItems come from the already-completed transaction, no extra DB hit.
-    sendOrderNotification({
-      orderId: result.orderId,
-      customerName: name,
-      customerEmail: email,
-      customerPhone: phone,
-      shippingAddress,
-      paymentMethod,
-      subtotal: result.subtotal,
-      total: result.total,
-      items: result.lineItems.map(li => ({
-        name: li.product.name,
-        quantity: li.quantity,
-        price: li.price,
-      })),
-    }).catch(emailErr => {
-      console.error('Failed to trigger order notification email:', emailErr)
-    })
+    // We must await the email call so Vercel does not terminate the lambda function
+    // before the HTTP requests to EmailJS/SMTP finish.
+    // Wrapped in a catch block so an email failure never prevents the order from succeeding.
+    try {
+      await sendOrderNotification({
+        orderId: result.orderId,
+        customerName: name,
+        customerEmail: email,
+        customerPhone: phone,
+        shippingAddress,
+        paymentMethod,
+        subtotal: result.subtotal,
+        total: result.total,
+        items: result.lineItems.map(li => ({
+          name: li.product.name,
+          quantity: li.quantity,
+          price: li.price,
+        })),
+      })
+    } catch (emailErr) {
+      console.error('Order placed, but failed to send notification email:', emailErr)
+    }
 
     return NextResponse.json({ success: true, orderId: result.orderId, total: result.total, pointsEarned: result.pointsEarned })
   } catch (err) {

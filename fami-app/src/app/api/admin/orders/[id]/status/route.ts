@@ -70,18 +70,22 @@ export async function PATCH(req: NextRequest, { params }: Params) {
         break
     }
     
-    // Fire and forget
-    sendCustomerOrderReceipt({
-      orderId: existing.id,
-      customerName: existing.name,
-      customerEmail: existing.email,
-      items: existing.items.map(i => ({ name: i.productName, quantity: i.quantity, price: i.price })),
-      subtotal: existing.subtotal,
-      total: existing.total,
-      shippingAddress: existing.shippingAddress,
-      statusMessage: statusMsg,
-      subject,
-    }).catch(console.error)
+    // Await so Vercel does not terminate before the email request completes
+    try {
+      await sendCustomerOrderReceipt({
+        orderId: existing.id,
+        customerName: existing.name,
+        customerEmail: existing.email,
+        items: existing.items.map(i => ({ name: i.productName, quantity: i.quantity, price: i.price })),
+        subtotal: existing.subtotal,
+        total: existing.total,
+        shippingAddress: existing.shippingAddress,
+        statusMessage: statusMsg,
+        subject,
+      })
+    } catch (emailErr) {
+      console.error('Failed to send status update email:', emailErr)
+    }
   }
 
   return NextResponse.json({ success: true })

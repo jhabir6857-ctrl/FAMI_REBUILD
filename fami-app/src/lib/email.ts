@@ -60,8 +60,13 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
         accessToken: privateKey,
         template_params: {
           to_email: to,
+          email: to,
+          to: to,
+          recipient: to,
+          customer_email: to,
           subject: subject,
           html_content: html,
+          message: html,
         },
       }),
     })
